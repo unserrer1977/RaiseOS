@@ -5,20 +5,15 @@
  */
 
 import { generateText } from "ai";
+import { chatModel, DECK_MODEL, modelConfigured } from "@/lib/ai/openrouter";
 import { extractPdfPageTexts } from "@/lib/extract/pdf";
 import { extractPptxPages } from "@/lib/extract/pptx";
-
-const OCR_MODEL = "google/gemini-3.5-flash-lite";
 
 /** Pages with fewer meaningful characters than this are treated as image-only. */
 export const MIN_PAGE_TEXT_CHARS = 40;
 export const OCR_BATCH_PAGES = 5;
 /** Keeps prompts bounded even for very long decks. */
 export const MAX_DECK_TEXT_CHARS = 120_000;
-
-export function modelConfigured(): boolean {
-  return Boolean(process.env.AI_GATEWAY_API_KEY);
-}
 
 export function normalisePageText(text: string): string {
   return text.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
@@ -84,7 +79,7 @@ async function ocrPdfPages(pdfBytes: Uint8Array, pageNumbers: number[]): Promise
       const partBytes = await doc.save();
 
       const { text: reply } = await generateText({
-        model: OCR_MODEL,
+        model: chatModel(DECK_MODEL),
         timeout: 60_000,
         messages: [
           {
@@ -110,7 +105,7 @@ async function ocrPdfPages(pdfBytes: Uint8Array, pageNumbers: number[]): Promise
   return out;
 }
 
-/** Per-slide PDF text, with optional OCR when the AI gateway is configured. */
+/** Per-slide PDF text, with optional OCR when OpenRouter is configured. */
 export async function readPdfDeck(bytes: Uint8Array): Promise<DeckReadResult> {
   const pdfForText = bytes.slice();
   const pdfForOcr = bytes.slice();

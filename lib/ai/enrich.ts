@@ -1,9 +1,10 @@
 import { generateText, Output } from "ai";
 import { z } from "zod";
+import { chatModel, DECK_MODEL, modelConfigured } from "@/lib/ai/openrouter";
 import { isSlideLabelledDeckText } from "@/lib/extract/deck-read";
 import { coerceIntake, type Intake, type Report } from "@/lib/types";
 
-const MODEL = "google/gemini-3.5-flash-lite";
+export { modelConfigured } from "@/lib/ai/openrouter";
 
 const intakeSchema = z.object({
   company: z.object({
@@ -44,10 +45,6 @@ const intakeSchema = z.object({
     notableInvestors: z.string(),
   }),
 });
-
-export function modelConfigured(): boolean {
-  return Boolean(process.env.AI_GATEWAY_API_KEY);
-}
 
 const EXTRACT_SYSTEM = [
   "You extract startup facts from a pitch deck for an investor intake form.",
@@ -106,7 +103,7 @@ async function extractWithModel(text: string, pdf: Uint8Array | null): Promise<I
     : "No text could be pulled from the deck. Read the attached file.";
   try {
     const { output } = await generateText({
-      model: MODEL,
+      model: chatModel(DECK_MODEL),
       timeout: pdf ? 90000 : 45000,
       output: Output.object({ schema: intakeSchema }),
       system: EXTRACT_SYSTEM,
@@ -141,7 +138,7 @@ export async function enrichReportProse(
 
   try {
     const { output } = await generateText({
-      model: MODEL,
+      model: chatModel(DECK_MODEL),
       timeout: 30000,
       output: Output.object({
         schema: z.object({

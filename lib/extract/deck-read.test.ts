@@ -40,12 +40,12 @@ describe("deck-read helpers", () => {
 
 describe("readPdfDeck", () => {
   beforeEach(() => {
-    process.env.AI_GATEWAY_API_KEY = "test";
+    process.env.OPENROUTER_API_KEY = "test";
     generateText.mockReset();
     vi.spyOn(console, "error").mockImplementation(() => {});
   });
   afterEach(() => {
-    delete process.env.AI_GATEWAY_API_KEY;
+    delete process.env.OPENROUTER_API_KEY;
     vi.restoreAllMocks();
   });
 
@@ -57,7 +57,7 @@ describe("readPdfDeck", () => {
     expect(result.text.toLowerCase()).toMatch(/northstar|tam|mrr/);
   });
 
-  it("fills image-only slides via OCR when the gateway is configured", async () => {
+  it("fills image-only slides via OCR when OpenRouter is configured", async () => {
     generateText.mockResolvedValue({ text: "=== Page 1 ===\nSecret Co\nTAM: $9B" });
     const doc = await PDFDocument.create();
     doc.addPage();

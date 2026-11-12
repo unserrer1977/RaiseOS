@@ -19,12 +19,12 @@ function modelSays(patch: (intake: ReturnType<typeof emptyIntake>) => void) {
 
 describe("enrichIntake", () => {
   beforeEach(() => {
-    process.env.AI_GATEWAY_API_KEY = "test";
+    process.env.OPENROUTER_API_KEY = "test";
     generateText.mockReset();
     vi.spyOn(console, "error").mockImplementation(() => {});
   });
   afterEach(() => {
-    delete process.env.AI_GATEWAY_API_KEY;
+    delete process.env.OPENROUTER_API_KEY;
     vi.restoreAllMocks();
   });
 
@@ -78,7 +78,7 @@ describe("enrichIntake", () => {
   });
 
   it("does nothing without a key", async () => {
-    delete process.env.AI_GATEWAY_API_KEY;
+    delete process.env.OPENROUTER_API_KEY;
     expect(await enrichIntake(DECK, emptyIntake())).toBeNull();
     expect(generateText).not.toHaveBeenCalled();
   });
