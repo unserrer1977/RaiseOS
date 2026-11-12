@@ -11,7 +11,7 @@ export default async function AngelReportPage({ params }: { params: Promise<{ id
   if (!user) redirect("/angel");
   if (!row) notFound();
   if (row.status !== "complete" || !row.report) {
-    redirect(row.status === "followup" ? `/angel/a/${id}/follow-up` : `/angel/a/${id}`);
+    redirect(`/angel/a/${id}`);
   }
 
   const headerList = await headers();

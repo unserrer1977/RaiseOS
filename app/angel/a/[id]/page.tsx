@@ -8,7 +8,6 @@ export default async function AngelAssessmentPage({ params }: { params: Promise<
   const { user, row } = await loadOwnedAssessment(id);
   if (!user) redirect("/angel");
   if (!row) notFound();
-  if (row.status === "followup") redirect(`/angel/a/${id}/follow-up`);
   if (row.status === "complete") redirect(`/angel/a/${id}/report`);
 
   return (

@@ -97,7 +97,7 @@ export async function submitIntake(
   return routeAfterIntakeReady(id, coerceIntake(intake), flow);
 }
 
-/** After deck refine: score venture fit and send the angel to gaps or the report. */
+/** After deck refine: venture verdict + founder questions from the deck only. */
 export async function advanceAngelAssessment(id: string) {
   const { supabase, user } = await getSessionUser();
   if (!supabase || !user) return { error: "Sign in required." };
@@ -112,10 +112,22 @@ export async function advanceAngelAssessment(id: string) {
   if (row.status === "complete") {
     redirect(`/angel/a/${id}/report`);
   }
-  if (row.status === "followup") {
-    redirect(`/angel/a/${id}/follow-up`);
-  }
-  return routeAfterIntakeReady(id, row.intake, "angel");
+
+  const intake = row.intake;
+  const followUps = selectFollowUps(intake);
+  const report = await finalize(id, intake, followUps, row.deck_text ?? "");
+  const { error: updateError } = await supabase
+    .from("assessments")
+    .update({
+      status: "complete",
+      follow_ups: followUps,
+      report,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id)
+    .eq("user_id", user.id);
+  if (updateError) return { error: "Could not finish the assessment." };
+  redirect(`/angel/a/${id}/report`);
 }
 
 async function routeAfterIntakeReady(id: string, intake: Intake, flow: Flow) {

@@ -75,7 +75,7 @@ export function AngelProcessing({
       <p className="text-muted">
         {phase === "reading"
           ? "We extract what the deck states into the assessment. This usually takes under a minute when the model is on."
-          : "If anything in the story does not hold, you will see at most four short questions only you can answer from your calls with the founder."}
+          : "We score venture fit from the deck only, then list questions for the founders with each gap named."}
       </p>
       {note ? (
         <p

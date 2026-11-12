@@ -21,8 +21,8 @@ const STEPS = [
     body: "Upload the PDF or PPTX the founder sent you, or paste a link. Raise Insight reads the slides and fills the assessment in the background.",
   },
   {
-    title: "Answer only what the deck cannot",
-    body: "If the venture story still has a gap, you will see at most four short questions — things only you would know from calls with the founder.",
+    title: "Deck only — no questions for you",
+    body: "We never ask the angel to fill in the story. Gaps show up as labelled questions to put to the founders on the report.",
   },
   {
     title: "Venture backable + founder questions",
@@ -57,7 +57,7 @@ const VERDICTS = [
 const BENEFITS = [
   {
     title: "Minutes, not evenings",
-    body: "The deck does the reading. You only answer a few gaps if the venture story still breaks.",
+    body: "Upload and wait. No forms and no questions for you — only the deck drives the read.",
   },
   {
     title: "Know what to ask",
@@ -141,8 +141,8 @@ export default async function AngelPage() {
               Is this deal right for you? Get a partner’s read before you write the cheque.
             </h1>
             <p className="max-w-xl text-lg text-muted sm:text-[19px]">
-              Upload the founder’s deck or paste a link. Raise Insight reads it, asks at most four gap questions where
-              only you can fill in the story, then tells you whether it is venture backable and what to ask the founders.
+              Upload the founder’s deck or paste a link. Raise Insight reads it, scores venture backability from the deck
+              alone, and gives you a labelled list of questions to ask the founders.
             </p>
             <p className="text-sm text-muted">No account, no password. The deck stays in private storage and is not used to train a model.</p>
           </div>
@@ -158,11 +158,7 @@ export default async function AngelPage() {
               <ul className="border-t border-line">
                 {rows.map((row) => {
                   const href =
-                    row.status === "complete"
-                      ? `/angel/a/${row.id}/report`
-                      : row.status === "followup"
-                        ? `/angel/a/${row.id}/follow-up`
-                        : `/angel/a/${row.id}`;
+                    row.status === "complete" ? `/angel/a/${row.id}/report` : `/angel/a/${row.id}`;
                   const companyName = row.intake.company.legalName.trim();
                   const title = companyName || row.deck_name || "Untitled deck";
                   const report = row.report as Report | null;
@@ -180,7 +176,7 @@ export default async function AngelPage() {
                           <VerdictPill verdict={report.verdict} label={report.verdictLabel} />
                         ) : (
                           <span className="whitespace-nowrap rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-muted">
-                            {row.status === "followup" ? "Quick questions" : "Reading deck"}
+                            Reading deck
                           </span>
                         )}
                       </Link>

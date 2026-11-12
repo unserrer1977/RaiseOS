@@ -6,7 +6,7 @@ import { useState } from "react";
 import { CopyIcon, DownloadIcon, FlagIcon, LinkIcon } from "@/components/icons";
 import { VERDICT_STYLE, VerdictIcon } from "@/components/verdict";
 import type { Report, Verdict } from "@/lib/types";
-import { formatFounderQuestions } from "@/lib/venture/angel-questions";
+import { formatFounderQuestions, type FounderQuestionItem } from "@/lib/venture/angel-questions";
 
 /** Plain-English reading of each verdict for an angel deciding whether to invest. */
 const ANGEL_READING: Record<Verdict, { title: string; body: string }> = {
@@ -42,7 +42,7 @@ export function ReportView({
   report: Report;
   flow?: "founder" | "angel";
   /** Angel flow only: questions to put to the founders. */
-  founderQuestions?: string[];
+  founderQuestions?: FounderQuestionItem[];
   shareUrl?: string;
   dateLabel?: string;
 }) {
@@ -192,7 +192,7 @@ export function ReportView({
   );
 }
 
-function FounderQuestions({ companyName, questions }: { companyName: string; questions: string[] }) {
+function FounderQuestions({ companyName, questions }: { companyName: string; questions: FounderQuestionItem[] }) {
   const [status, setStatus] = useState<"idle" | "copied" | "failed">("idle");
 
   async function copy() {
@@ -210,7 +210,7 @@ function FounderQuestions({ companyName, questions }: { companyName: string; que
         <div className="flex max-w-xl flex-col gap-2">
           <h2 className="text-xl font-semibold">{questions.length} questions to ask the founders</h2>
           <p className="text-[15px] text-muted">
-            The first ones come from the gaps in this deck. Take them into your next call or send them ahead.
+            Each row names the gap in the deck, then the question to put to the founders.
           </p>
         </div>
         <button
@@ -225,12 +225,15 @@ function FounderQuestions({ companyName, questions }: { companyName: string; que
         </button>
       </div>
       <ol className="flex flex-col border-t border-line">
-        {questions.map((question, index) => (
-          <li key={question} className="flex gap-4 border-b border-line py-4">
+        {questions.map((item, index) => (
+          <li key={`${item.gap}-${item.question}`} className="flex gap-4 border-b border-line py-4">
             <span aria-hidden="true" className="w-7 shrink-0 font-mono text-sm text-muted">
               {String(index + 1).padStart(2, "0")}
             </span>
-            <span className="text-[17px] leading-relaxed text-ink">{question}</span>
+            <div className="flex min-w-0 flex-col gap-1">
+              <p className="text-[13px] font-medium text-muted">Gap: {item.gap}</p>
+              <p className="text-[17px] leading-relaxed text-ink">{item.question}</p>
+            </div>
           </li>
         ))}
       </ol>

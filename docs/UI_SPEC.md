@@ -79,8 +79,8 @@ Public, no account. Deck-first — no five-pillar intake wizard for angels.
 ```text
 /angel                         Landing + upload / paste link
 /angel/a/:id                   Processing (deck read + model refine + route)
-/angel/a/:id/follow-up         Optional: 0–4 venture gap questions for the angel
-/angel/a/:id/report            Verdict, founder questions, flags (SWOT collapsed)
+/angel/a/:id/follow-up         Redirects to /angel/a/:id (legacy)
+/angel/a/:id/report            Verdict, gap-labelled founder questions, flags (SWOT collapsed)
 /s/:token                      Share link (report only)
 ```
 

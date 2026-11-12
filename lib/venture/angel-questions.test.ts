@@ -32,61 +32,65 @@ describe("buildFounderQuestions", () => {
     },
   };
 
-  it("asks about everything when the deck gave nothing", () => {
+  it("labels gaps when the deck gave nothing", () => {
     const questions = buildFounderQuestions(coerceIntake({}), []);
-    expect(new Set(questions).size).toBe(questions.length);
-    expect(questions.length).toBeGreaterThan(20);
-    expect(questions).toContain("Which country is the company registered and based in?");
-    expect(questions).toContain("What is the company’s registered legal name?");
+    expect(questions.length).toBeGreaterThan(5);
+    expect(questions[0].gap).toBeTruthy();
+    expect(questions.some((q) => q.gap.includes("country"))).toBe(true);
   });
 
-  it("returns eight standard questions for a complete intake", () => {
+  it("returns only rule gaps for a complete intake", () => {
     const questions = buildFounderQuestions(coerceIntake(COMPLETE), []);
-    expect(questions).toHaveLength(8);
-    expect(questions).not.toContain("Which country is the company registered and based in?");
+    expect(questions).toHaveLength(0);
   });
 
-  it("adds a question for each thing the deck left out", () => {
+  it("adds a labelled gap for each thing the deck left out", () => {
     const intake = coerceIntake({
       ...COMPLETE,
       company: { ...COMPLETE.company, country: "", teamSize: "" },
       gtm: { ...COMPLETE.gtm, salesCycle: "" },
     });
     const questions = buildFounderQuestions(intake, []);
-    expect(questions.slice(0, 3)).toEqual([
-      "Which country is the company registered and based in?",
-      "How many people work on this today, including the founders, and how many are full-time?",
-      "How long does it take to win a customer, from first conversation to signed contract?",
-    ]);
-    expect(questions).toHaveLength(8);
+    expect(questions[0]).toMatchObject({
+      gap: "Company country / jurisdiction not stated in the deck",
+    });
+    expect(questions.some((q) => q.gap.includes("Headcount"))).toBe(true);
+    expect(questions.some((q) => q.gap.includes("Sales cycle"))).toBe(true);
   });
 
-  it("puts unanswered follow-ups first and skips answered ones", () => {
+  it("includes structural follow-ups as founder questions with rule gaps", () => {
     const followUps: FollowUp[] = [
-      { id: "market_scale", pillar: "problem", question: "Market question?", reason: "", answer: "" },
       {
-        id: "cap_table",
-        pillar: "capTable",
-        question: "Cap question?",
-        reason: "",
-        answer: "There was a spin-out from a university lab in 2022.",
+        id: "market_scale",
+        pillar: "problem",
+        question: "Market question?",
+        reason: "Venture funds need a market that can support a $1B+ outcome.",
+        answer: "",
       },
     ];
     const questions = buildFounderQuestions(coerceIntake({}), followUps);
-    expect(questions[0]).toBe("Market question?");
-    expect(questions).not.toContain("Cap question?");
+    expect(questions[0]).toEqual({
+      gap: "Venture funds need a market that can support a $1B+ outcome.",
+      question: "Market question?",
+    });
   });
 
-  it("flags worrying numbers", () => {
+  it("flags worrying numbers in the gap line", () => {
     const intake = coerceIntake({ gtm: { cac: "$5,000", ltv: "$6,000" }, traction: { churn: "9%" } });
     const questions = buildFounderQuestions(intake, []);
-    expect(questions.some((question) => question.includes("less than three times CAC"))).toBe(true);
-    expect(questions.some((question) => question.startsWith("Monthly churn is 9%"))).toBe(true);
+    expect(questions.some((q) => q.gap.includes("Unit economics"))).toBe(true);
+    expect(questions.some((q) => q.gap.startsWith("Churn of"))).toBe(true);
   });
 });
 
 describe("formatFounderQuestions", () => {
-  it("numbers the questions under a heading", () => {
-    expect(formatFounderQuestions("Acme", ["A?", "B?"])).toBe("Questions for the founders of Acme\n\n1. A?\n2. B?");
+  it("numbers gaps and questions under a heading", () => {
+    const text = formatFounderQuestions("Acme", [
+      { gap: "TAM missing", question: "What is TAM?" },
+      { gap: "No traction", question: "Any revenue?" },
+    ]);
+    expect(text).toContain("1. Gap: TAM missing");
+    expect(text).toContain("What is TAM?");
+    expect(text).toContain("2. Gap: No traction");
   });
 });

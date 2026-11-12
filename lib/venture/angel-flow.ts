@@ -1,11 +1,7 @@
 import type { Intake } from "@/lib/types";
 import { selectFollowUps } from "@/lib/venture/rules";
 
-/** Venture rule gaps that need the angel’s off-deck knowledge (0–4). */
-export function angelGapQuestions(intake: Intake) {
+/** Venture rule misses used in the report (not shown to the angel as a form). */
+export function angelStructuralGaps(intake: Intake) {
   return selectFollowUps(intake);
-}
-
-export function angelNeedsGapStep(intake: Intake): boolean {
-  return angelGapQuestions(intake).length > 0;
 }
