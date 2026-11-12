@@ -22,8 +22,7 @@ export type NarrativeSource = "rules" | "model";
 export interface Intake {
   company: {
     legalName: string;
-    foundingDate: string;
-    headquarters: string;
+    country: string;
     teamSize: string;
     founderBackgrounds: string;
   };
@@ -110,8 +109,7 @@ export function emptyIntake(): Intake {
   return {
     company: {
       legalName: "",
-      foundingDate: "",
-      headquarters: "",
+      country: "",
       teamSize: "",
       founderBackgrounds: "",
     },
@@ -168,8 +166,7 @@ export function coerceIntake(value: unknown): Intake {
 
   intake.company = {
     legalName: str(company.legalName),
-    foundingDate: str(company.foundingDate),
-    headquarters: str(company.headquarters),
+    country: str(company.country),
     teamSize: str(company.teamSize),
     founderBackgrounds: str(company.founderBackgrounds),
   };

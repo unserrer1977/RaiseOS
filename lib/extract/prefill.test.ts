@@ -10,7 +10,7 @@ describe("prefillFromText", () => {
     const { intake, sources, thin } = prefillFromText(SAMPLE_DECK_TEXT);
     expect(thin).toBe(false);
     expect(intake.company.legalName).toBe("Northstar Labs Inc.");
-    expect(intake.company.headquarters).toBe("Austin, TX");
+    expect(intake.company.country).toBe("United States");
     expect(intake.company.teamSize).toBe("6");
     expect(intake.problem.tam).toBe("$100M");
     expect(intake.problem.solution).toContain("SaaS");
@@ -47,14 +47,16 @@ M A R K E T
 A £2.4bn category. We start with councils
 £30 a household a year
 T H E A S K
-Raising £400k £2.5m pre-money 13.8% equity
+Raising £400k £2.5m pre-money 13.8% equity SEIS & EIS
 `;
 
 describe("prefillFromText on a slide-style deck", () => {
   it("picks up the basics without labels", () => {
     const { intake } = prefillFromText(SLIDE_DECK_TEXT);
     expect(intake.company.legalName).toBe("Binwise Systems Ltd");
-    expect(intake.company.teamSize).toBe("2");
+    expect(intake.company.country).toBe("United Kingdom");
+    // Two named founders is not a stated headcount.
+    expect(intake.company.teamSize).toBe("");
     expect(intake.company.founderBackgrounds).toContain("Asha Verma (Co-founder and CEO): Ran waste contracts");
     expect(intake.company.founderBackgrounds).toContain("Tom Okafor (Co-founder and CTO): 15 years of mapping software.");
     expect(intake.company.founderBackgrounds).not.toContain("Backed by");

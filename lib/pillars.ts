@@ -24,8 +24,7 @@ export const PILLARS: PillarDef[] = [
     title: "Who is building this?",
     fields: [
       { key: "legalName", label: "Legal name", placeholder: "Northstar Labs Inc." },
-      { key: "foundingDate", label: "Founding date", placeholder: "March 2024" },
-      { key: "headquarters", label: "Headquarters", placeholder: "Austin, TX" },
+      { key: "country", label: "Country", placeholder: "United Kingdom" },
       { key: "teamSize", label: "Team size", placeholder: "6" },
       {
         key: "founderBackgrounds",

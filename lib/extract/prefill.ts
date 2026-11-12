@@ -10,8 +10,7 @@ const THIN_TEXT = 80;
 
 const LINE_RULES: { path: string; pattern: RegExp }[] = [
   { path: "company.legalName", pattern: /^(?:legal name|company name)\s*[:\-]\s*(.+)$/i },
-  { path: "company.foundingDate", pattern: /^(?:founded|founding date|incorporated)\s*[:\-]\s*(.+)$/i },
-  { path: "company.headquarters", pattern: /^(?:headquarters|hq|based in)\s*[:\-]\s*(.+)$/i },
+  { path: "company.country", pattern: /^country\s*[:\-]\s*(.+)$/i },
   { path: "company.teamSize", pattern: /^(?:team size|headcount|employees)\s*[:\-]\s*(.+)$/i },
   { path: "company.founderBackgrounds", pattern: /^(?:founders?|founder backgrounds?)\s*[:\-]\s*(.+)$/i },
   { path: "problem.pain", pattern: /^(?:problem|pain(?: point)?)\s*[:\-]\s*(.+)$/i },
@@ -116,14 +115,48 @@ function applyFallbacks(text: string, found: Map<string, string>) {
   grab("capTable.notableInvestors", /^Backed by\s+(.+)$/im);
   grab("capTable.stage", /\b(pre[-\s]?seed|series\s+a|seed)\b/i);
 
+  // Country only when the deck says where the company is, or names a scheme
+  // that only companies in one country can use.
+  if (!found.has("company.country")) {
+    const stated = text.match(
+      new RegExp(
+        `\\b(?:based|headquartered|registered|incorporated)\\s+in\\s+(?:[\\w.' -]{2,30},\\s*)?(?:the\\s+)?(${Object.keys(COUNTRIES).join("|")})\\b`,
+        "i",
+      ),
+    );
+    if (stated) found.set("company.country", COUNTRIES[stated[1].toLowerCase()]);
+    else if (/\bS?EIS\b/.test(text)) found.set("company.country", "United Kingdom");
+  }
+
+  // Named founders are not a headcount, so team size is left for the
+  // founders to answer.
   const team = readTeam(text);
-  if (team.length > 0) {
-    if (!found.has("company.teamSize")) found.set("company.teamSize", String(team.length));
-    if (!found.has("company.founderBackgrounds")) {
-      found.set("company.founderBackgrounds", clean(team.join(" ")).slice(0, 600));
-    }
+  if (team.length > 0 && !found.has("company.founderBackgrounds")) {
+    found.set("company.founderBackgrounds", clean(team.join(" ")).slice(0, 600));
   }
 }
+
+const COUNTRIES: Record<string, string> = {
+  "united kingdom": "United Kingdom",
+  uk: "United Kingdom",
+  england: "United Kingdom",
+  scotland: "United Kingdom",
+  wales: "United Kingdom",
+  "northern ireland": "United Kingdom",
+  "united states": "United States",
+  usa: "United States",
+  ireland: "Ireland",
+  france: "France",
+  germany: "Germany",
+  spain: "Spain",
+  italy: "Italy",
+  netherlands: "Netherlands",
+  sweden: "Sweden",
+  canada: "Canada",
+  australia: "Australia",
+  india: "India",
+  singapore: "Singapore",
+};
 
 const MONEY = "[$£€]\\s?\\d[\\d.,]*\\s?(?:trillion|billion|million|thousand|bn|tn|mn|[tmbk])?\\b";
 
@@ -191,8 +224,7 @@ function clean(value: string): string {
 
 export const SAMPLE_DECK_TEXT = `Northstar Labs
 Legal name: Northstar Labs Inc.
-Founded: March 2024
-Headquarters: Austin, TX
+Country: United States
 Team size: 6
 Founders: Ada Okonkwo, former payments lead at Stripe. Ben Cho, robotics PhD.
 Problem: Mid-market warehouses lose 8 hours a week reconciling inventory.
