@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { DownloadIcon, FlagIcon, LinkIcon } from "@/components/icons";
+import { CopyIcon, DownloadIcon, FlagIcon, LinkIcon } from "@/components/icons";
 import { VERDICT_STYLE, VerdictIcon } from "@/components/verdict";
 import type { Report, Verdict } from "@/lib/types";
+import { formatFounderQuestions } from "@/lib/venture/angel-questions";
 
 /** Plain-English reading of each verdict for an angel deciding whether to invest. */
 const ANGEL_READING: Record<Verdict, { title: string; body: string }> = {
@@ -35,9 +36,12 @@ export function ReportView({
   shareUrl,
   dateLabel,
   flow = "founder",
+  founderQuestions,
 }: {
   report: Report;
   flow?: "founder" | "angel";
+  /** Angel flow only: questions to put to the founders. */
+  founderQuestions?: string[];
   shareUrl?: string;
   dateLabel?: string;
 }) {
@@ -124,6 +128,10 @@ export function ReportView({
         <FlagList title="Red flags" items={report.redFlags} tone="bad" />
       </div>
 
+      {flow === "angel" && founderQuestions && founderQuestions.length > 0 ? (
+        <FounderQuestions companyName={report.companyName} questions={founderQuestions} />
+      ) : null}
+
       <section className="flex flex-col gap-5">
         <h2 className="font-serif text-[28px]">SWOT</h2>
         <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
@@ -166,6 +174,52 @@ export function ReportView({
         </div>
       )}
     </article>
+  );
+}
+
+function FounderQuestions({ companyName, questions }: { companyName: string; questions: string[] }) {
+  const [status, setStatus] = useState<"idle" | "copied" | "failed">("idle");
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(formatFounderQuestions(companyName, questions));
+      setStatus("copied");
+    } catch {
+      setStatus("failed");
+    }
+  }
+
+  return (
+    <section className="flex flex-col gap-5 border-t border-line pt-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="flex max-w-xl flex-col gap-2">
+          <h2 className="font-serif text-[28px]">{questions.length} questions to ask the founders</h2>
+          <p className="text-[15px] text-muted">
+            The first ones come from the gaps in this deck. Take them into your next call or send them ahead.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => void copy()}
+          className="no-print inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-5 text-sm text-paper"
+        >
+          <CopyIcon size={16} />
+          <span aria-live="polite">
+            {status === "copied" ? "Questions copied" : status === "failed" ? "Copy failed, try again" : "Copy questions"}
+          </span>
+        </button>
+      </div>
+      <ol className="flex flex-col border-t border-line">
+        {questions.map((question, index) => (
+          <li key={question} className="flex gap-4 border-b border-line py-4">
+            <span aria-hidden="true" className="w-7 shrink-0 font-serif text-xl text-accent">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span className="text-[17px] leading-relaxed text-ink">{question}</span>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
