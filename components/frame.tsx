@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Wordmark } from "@/components/wordmark";
+import { ACCOUNTS_ENABLED } from "@/lib/features";
 
 export function Frame({
   email,
@@ -13,9 +14,9 @@ export function Frame({
   return (
     <div className="mx-auto min-h-full w-full max-w-3xl px-5 py-8">
       <header className="no-print flex flex-wrap items-center justify-between gap-4">
-        <Wordmark href={flow === "angel" ? "/angel" : "/"} suffix={flow === "angel" ? "for angels" : undefined} />
+        <Wordmark href={flow === "angel" || !ACCOUNTS_ENABLED ? "/angel" : "/"} suffix={flow === "angel" ? "for angels" : undefined} />
         <nav aria-label={flow === "angel" ? "Main" : "Account"} className="flex flex-wrap items-center gap-4 text-sm text-muted">
-          {flow === "angel" ? (
+          {flow === "angel" || !ACCOUNTS_ENABLED ? (
             <Link href="/angel" className="text-ink">
               Assess a deck
             </Link>

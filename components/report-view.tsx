@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ACCOUNTS_ENABLED } from "@/lib/features";
 import { useState } from "react";
 import { CopyIcon, DownloadIcon, FlagIcon, LinkIcon } from "@/components/icons";
 import { VERDICT_STYLE, VerdictIcon } from "@/components/verdict";
@@ -162,7 +163,7 @@ export function ReportView({
             Start a new assessment
           </Link>
         </div>
-      ) : (
+      ) : ACCOUNTS_ENABLED ? (
         <div className="no-print flex flex-wrap items-center justify-between gap-5 rounded-[20px] bg-ink p-8 text-paper">
           <p className="max-w-md font-serif text-[26px] leading-tight">Get a read on your own company.</p>
           <Link
@@ -170,6 +171,16 @@ export function ReportView({
             className="inline-flex min-h-12 items-center rounded-full bg-paper px-6 text-[15px] text-ink"
           >
             Register
+          </Link>
+        </div>
+      ) : (
+        <div className="no-print flex flex-wrap items-center justify-between gap-5 rounded-[20px] bg-ink p-8 text-paper">
+          <p className="max-w-md font-serif text-[26px] leading-tight">Get a read on another deck.</p>
+          <Link
+            href="/angel"
+            className="inline-flex min-h-12 items-center rounded-full bg-paper px-6 text-[15px] text-ink"
+          >
+            Assess a deck
           </Link>
         </div>
       )}
