@@ -38,7 +38,10 @@ export async function ingestDeck(
     contentType: kind === "pdf" ? "application/pdf" : PPTX_MIME,
     upsert: false,
   });
-  if (uploadError) return { error: "The deck could not be stored.", status: 500 };
+  if (uploadError) {
+    console.error("ingestDeck: deck upload failed", uploadError);
+    return { error: "The deck could not be stored.", status: 500 };
+  }
 
   const { error: insertError } = await supabase.from("assessments").insert({
     id,
@@ -58,6 +61,7 @@ export async function ingestDeck(
   });
 
   if (insertError) {
+    console.error("ingestDeck: assessment insert failed", insertError);
     await supabase.storage.from("decks").remove([deckPath]);
     return { error: "The assessment could not be created.", status: 500 };
   }
