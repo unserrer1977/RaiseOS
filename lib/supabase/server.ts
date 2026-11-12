@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+import { resolveSupabaseKeys } from "@/lib/supabase/root-secret";
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -29,7 +30,7 @@ export async function createClient() {
 
 export function createAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SECRET_KEY;
+  const key = resolveSupabaseKeys().secretKey;
   if (!url || !key) return null;
   return createSupabaseClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
