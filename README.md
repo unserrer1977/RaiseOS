@@ -11,7 +11,8 @@ RaiseOS turns a pitch deck into a five-pillar intake, at most four venture follo
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SECRET_KEY` (server only, used to resolve a share link to the finished report)
-- `AI_GATEWAY_API_KEY` (optional; without it, deck prefill and the report stay on the deterministic rules)
+- `OPENROUTER_API_KEY` (optional; an OpenRouter key. Without it, deck prefill and the report stay on the deterministic rules)
+- `OPENROUTER_MODEL` (optional; the OpenRouter model id to use. It must accept PDF files. Defaults to `google/gemini-3.5-flash-lite`)
 
 4. `npm run dev`. Set the public Supabase variables before `npm run build` as well; Next.js inlines `NEXT_PUBLIC_` values at build time.
 

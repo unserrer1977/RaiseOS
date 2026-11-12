@@ -1,8 +1,15 @@
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { generateText, Output } from "ai";
 import { z } from "zod";
 import { coerceIntake, type Intake, type Report } from "@/lib/types";
 
-const MODEL = "google/gemini-3.5-flash-lite";
+const DEFAULT_MODEL = "google/gemini-3.5-flash-lite";
+
+/** The model is reached through OpenRouter, with an OpenRouter API key. */
+function model() {
+  const openrouter = createOpenRouter({ apiKey: process.env.OPENROUTER_API_KEY });
+  return openrouter(process.env.OPENROUTER_MODEL?.trim() || DEFAULT_MODEL);
+}
 
 const intakeSchema = z.object({
   company: z.object({
@@ -44,7 +51,7 @@ const intakeSchema = z.object({
 });
 
 export function modelConfigured(): boolean {
-  return Boolean(process.env.AI_GATEWAY_API_KEY);
+  return Boolean(process.env.OPENROUTER_API_KEY?.trim());
 }
 
 const EXTRACT_SYSTEM = [
@@ -100,7 +107,7 @@ async function extractWithModel(text: string, pdf: Uint8Array | null): Promise<I
     : "No text could be pulled from the deck. Read the attached file.";
   try {
     const { output } = await generateText({
-      model: MODEL,
+      model: model(),
       timeout: pdf ? 90000 : 45000,
       output: Output.object({ schema: intakeSchema }),
       system: EXTRACT_SYSTEM,
@@ -110,7 +117,7 @@ async function extractWithModel(text: string, pdf: Uint8Array | null): Promise<I
           content: pdf
             ? [
                 { type: "text", text: `The pitch deck is attached as a PDF.\n\n${textBlock}` },
-                { type: "file", mediaType: "application/pdf", data: pdf },
+                { type: "file", mediaType: "application/pdf", filename: "deck.pdf", data: pdf },
               ]
             : [{ type: "text", text: textBlock }],
         },
@@ -135,7 +142,7 @@ export async function enrichReportProse(
 
   try {
     const { output } = await generateText({
-      model: MODEL,
+      model: model(),
       timeout: 30000,
       output: Output.object({
         schema: z.object({
