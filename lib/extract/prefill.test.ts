@@ -29,6 +29,45 @@ describe("prefillFromText", () => {
   });
 });
 
+const SLIDE_DECK_TEXT = `Fewer missed bins.
+Pre-seed · £400k · Closing March 2027
+Private and confidential. Prepared by Binwise Systems Ltd for the recipient only.
+T E A M
+Two operators who ran the rounds
+Asha Verma
+Co-founder and CEO
+Ran waste contracts for three councils. Built the
+first routing team at a logistics firm.
+Tom Okafor
+Co-founder and CTO
+15 years of mapping software.
+Backed by Northern Angels and two former council leaders
+5
+M A R K E T
+A £2.4bn category. We start with councils
+£30 a household a year
+T H E A S K
+Raising £400k £2.5m pre-money 13.8% equity
+`;
+
+describe("prefillFromText on a slide-style deck", () => {
+  it("picks up the basics without labels", () => {
+    const { intake } = prefillFromText(SLIDE_DECK_TEXT);
+    expect(intake.company.legalName).toBe("Binwise Systems Ltd");
+    expect(intake.company.teamSize).toBe("2");
+    expect(intake.company.founderBackgrounds).toContain("Asha Verma (Co-founder and CEO): Ran waste contracts");
+    expect(intake.company.founderBackgrounds).toContain("Tom Okafor (Co-founder and CTO): 15 years of mapping software.");
+    expect(intake.company.founderBackgrounds).not.toContain("Backed by");
+    expect(intake.problem.tam).toBe("£2.4bn");
+    expect(intake.gtm.priceOrAcv).toBe("£30 a household a year");
+    expect(intake.capTable.stage).toBe("pre_seed");
+    expect(intake.capTable.valuationOrCap).toBe("£2.5m pre-money");
+    expect(intake.capTable.notableInvestors).toBe("Northern Angels and two former council leaders");
+    // The size of the round being raised is not money already raised.
+    expect(intake.capTable.amountRaised).toBe("");
+  });
+});
+
 describe("deck files", () => {
   it("reads the same labels back out of a PDF", async () => {
     const doc = await PDFDocument.create();

@@ -23,7 +23,7 @@ export function selectFollowUps(intake: Intake): FollowUp[] {
       id: "market_scale",
       pillar: "problem",
       question: tam
-        ? `Given the ${formatMoney(tam.amount)} TAM, how do you plan to achieve a venture-scale exit ($1B+ valuation), or are you planning to expand into adjacent markets?`
+        ? `Given the ${formatMoney(tam.amount, tam.currency)} TAM, how do you plan to achieve a venture-scale exit ($1B+ valuation), or are you planning to expand into adjacent markets?`
         : "The deck does not size the market, and the customer looks narrow. What is the TAM, and is there an adjacent market that supports a venture-scale exit?",
       reason: tam
         ? "Venture funds need a market that can support a $1B+ outcome."
@@ -34,8 +34,8 @@ export function selectFollowUps(intake: Intake): FollowUp[] {
 
   if (enterprise && price && isLowAcv(price)) {
     const shown = price.monthly
-      ? `${formatMoney(price.amount)}/month`
-      : `${formatMoney(price.amount)} ACV`;
+      ? `${formatMoney(price.amount, price.currency)}/month`
+      : `${formatMoney(price.amount, price.currency)} ACV`;
     questions.push({
       id: "gtm_plg",
       pillar: "gtm",
@@ -63,7 +63,7 @@ export function selectFollowUps(intake: Intake): FollowUp[] {
     questions.push({
       id: "unit_economics",
       pillar: "gtm",
-      question: `CAC (${formatMoney(cac.amount)}) is higher than LTV (${formatMoney(ltv.amount)}). How do these unit economics reach a venture return, or which input is misstated?`,
+      question: `CAC (${formatMoney(cac.amount, cac.currency)}) is higher than LTV (${formatMoney(ltv.amount, ltv.currency)}). How do these unit economics reach a venture return, or which input is misstated?`,
       reason: "Paying more to acquire a customer than they are worth breaks the model.",
       answer: "",
     });

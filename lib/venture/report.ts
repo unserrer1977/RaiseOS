@@ -1,4 +1,4 @@
-import { formatMoney, parseMoney, parsePercent } from "@/lib/money";
+import { formatMoney, parseMoney, parsePercent, type MoneyMatch } from "@/lib/money";
 import type { FollowUp, Intake, Report, Verdict } from "@/lib/types";
 import {
   businessModel,
@@ -36,7 +36,7 @@ export function buildReport(intake: Intake, followUps: FollowUp[]): Report {
     verdictLabel: VERDICT_LABEL[verdict],
     companyName,
     rationale: rationaleCopy(verdict, companyName, misses, intake),
-    ventureScale: ventureScaleCopy(model, tam?.amount ?? null, intake),
+    ventureScale: ventureScaleCopy(model, tam, intake),
     greenFlags: greenFlags.length > 0 ? greenFlags : ["No standout green flag is on the page yet."],
     redFlags: redFlags.length > 0 ? redFlags : ["No structural red flag fired from the intake."],
     swot: swotCopy(intake, misses, model, followUps),
@@ -121,7 +121,7 @@ function greenFlagList(intake: Intake, model: ReturnType<typeof businessModel>):
   const cac = parseMoney(intake.gtm.cac);
   const ltv = parseMoney(intake.gtm.ltv);
 
-  if (tam && tam.amount >= 1e9) flags.push(`TAM of ${formatMoney(tam.amount)} can support a venture outcome.`);
+  if (tam && tam.amount >= 1e9) flags.push(`TAM of ${formatMoney(tam.amount, tam.currency)} can support a venture outcome.`);
   if (growth !== null && growth >= 10) flags.push(`MoM growth of ${growth}% is strong for this stage.`);
   if (equity !== null && equity >= 50) flags.push(`Founders still own ${equity}%, enough room for a new round.`);
   if (cac && ltv && ltv.amount >= cac.amount * 3) {
@@ -140,7 +140,7 @@ function redFlagCopy(miss: Miss, intake: Intake): string {
   switch (miss) {
     case "market":
       return tam
-        ? `TAM of ${formatMoney(tam.amount)} is below the $1B venture bar, and the follow-up did not describe a larger market.`
+        ? `TAM of ${formatMoney(tam.amount, tam.currency)} is below the $1B venture bar, and the follow-up did not describe a larger market.`
         : "Market size is still unknown.";
     case "gtm":
       return "Enterprise motion paired with a low price, without a product-led distribution answer.";
@@ -171,8 +171,8 @@ function rationaleCopy(
   return `${companyName} stacks ${misses.length} structural gaps (${misses.map(labelMiss).join(", ")}). A seed fund is the wrong instrument until those are repaired. Bootstrapping, or a smaller non-venture round, fits the shape of the business today.`;
 }
 
-function ventureScaleCopy(model: ReturnType<typeof businessModel>, tam: number | null, intake: Intake): string {
-  const market = tam ? `The stated TAM is ${formatMoney(tam)}.` : "TAM was not stated.";
+function ventureScaleCopy(model: ReturnType<typeof businessModel>, tam: MoneyMatch | null, intake: Intake): string {
+  const market = tam ? `The stated TAM is ${formatMoney(tam.amount, tam.currency)}.` : "TAM was not stated.";
   if (model === "software") {
     return `${market} Software margins can turn a large market into a venture-scale company if distribution stays cheaper than the revenue it produces. Price on file: ${intake.gtm.priceOrAcv || "not stated"}.`;
   }

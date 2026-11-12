@@ -52,8 +52,10 @@ export function IntakeForm({
         mode?: ExtractionMode;
         intake?: Intake;
         filled?: string[];
+        note?: string | null;
       };
       if (payload.mode === "model") setMode("model");
+      if (payload.note && !cancelled) setNote(payload.note);
       if (!payload.intake || !payload.filled?.length || cancelled) return;
       // Take the model's reading of the deck, except for fields typed since.
       const filled = payload.filled.filter((path) => !edited.current.has(path));
