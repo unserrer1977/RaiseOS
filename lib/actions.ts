@@ -79,10 +79,18 @@ export async function saveIntake(
   return { ok: true as const };
 }
 
+export type Flow = "founder" | "angel";
+
+/** Where the assessment pages live for each flow. */
+function basePath(flow: Flow, id: string) {
+  return flow === "angel" ? `/angel/a/${id}` : `/a/${id}`;
+}
+
 export async function submitIntake(
   id: string,
   intake: Intake,
   sources: Record<string, FieldSource>,
+  flow: Flow = "founder",
 ) {
   const saved = await saveIntake(id, intake, sources);
   if ("error" in saved && saved.error) return saved;
@@ -104,7 +112,7 @@ export async function submitIntake(
       .eq("id", id)
       .eq("user_id", user.id);
     if (error) return { error: "Could not finish the assessment." };
-    redirect(`/a/${id}/report`);
+    redirect(`${basePath(flow, id)}/report`);
   }
 
   const { error } = await supabase
@@ -117,12 +125,13 @@ export async function submitIntake(
     .eq("id", id)
     .eq("user_id", user.id);
   if (error) return { error: "Could not save follow-up questions." };
-  redirect(`/a/${id}/follow-up`);
+  redirect(`${basePath(flow, id)}/follow-up`);
 }
 
 export async function submitFollowUps(
   id: string,
   answers: { id: FollowUp["id"]; answer: string }[],
+  flow: Flow = "founder",
 ) {
   const { supabase, user } = await getSessionUser();
   if (!supabase || !user) return { error: "Sign in required." };
@@ -150,7 +159,7 @@ export async function submitFollowUps(
     .eq("id", id)
     .eq("user_id", user.id);
   if (updateError) return { error: "Could not save the report." };
-  redirect(`/a/${id}/report`);
+  redirect(`${basePath(flow, id)}/report`);
 }
 
 async function finalize(id: string, intake: Intake, followUps: FollowUp[], deckText = "") {

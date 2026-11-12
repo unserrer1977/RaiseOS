@@ -17,6 +17,14 @@ RaiseOS turns a pitch deck into a five-pillar intake, at most four venture follo
 
 Decks are stored in a private `decks` bucket. Share links return the finished report only.
 
+## Angel flow (`/angel`)
+
+`/angel` is a public version of the same assessment, written for angel investors deciding whether an opportunity is right for them. Anyone can upload a deck or paste a deck link without registering or entering a password.
+
+- Behind the scenes each visitor gets an invisible guest session (Supabase anonymous sign-in), so the existing row-level security keeps each visitor's decks private to their browser. **Turn on anonymous sign-ins** in the Supabase dashboard: Authentication → Sign In / Providers → "Allow anonymous sign-ins". Until then, uploads on `/angel` show an error saying so.
+- Deck links are downloaded on the server. Direct PDF/PPTX links work, and Google Drive, Google Slides and Dropbox share links are converted to direct downloads. Links behind a password, sign-in or email gate (for example DocSend) can't be read; the page asks visitors to check this. Private and internal network addresses are refused.
+- Guest sessions are kept out of founder pages (`/home`, `/a/...`).
+
 ## Checks
 
 - `npm test`

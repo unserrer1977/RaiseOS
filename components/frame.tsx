@@ -3,17 +3,23 @@ import { Wordmark } from "@/components/wordmark";
 
 export function Frame({
   email,
+  flow = "founder",
   children,
 }: {
   email?: string | null;
+  flow?: "founder" | "angel";
   children: React.ReactNode;
 }) {
   return (
     <div className="mx-auto min-h-full w-full max-w-3xl px-5 py-8">
       <header className="no-print flex flex-wrap items-center justify-between gap-4">
-        <Wordmark />
-        <nav aria-label="Account" className="flex flex-wrap items-center gap-4 text-sm text-muted">
-          {email ? (
+        <Wordmark href={flow === "angel" ? "/angel" : "/"} suffix={flow === "angel" ? "for angels" : undefined} />
+        <nav aria-label={flow === "angel" ? "Main" : "Account"} className="flex flex-wrap items-center gap-4 text-sm text-muted">
+          {flow === "angel" ? (
+            <Link href="/angel" className="text-ink">
+              Assess a deck
+            </Link>
+          ) : email ? (
             <>
               <Link href="/home" className="hover:text-ink">
                 Assessments

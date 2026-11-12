@@ -86,7 +86,7 @@ const secondaryButton =
 export default async function HomePage() {
   await connection();
   const { user } = await getSessionUser();
-  if (user) redirect("/home");
+  if (user && !user.isAnonymous) redirect("/home");
 
   return (
     <div className="min-h-full">
