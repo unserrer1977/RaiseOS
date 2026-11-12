@@ -21,3 +21,7 @@ Decks are stored in a private `decks` bucket. Share links return the finished re
 
 - `npm test`
 - `npm run typecheck`
+
+## Product design
+
+- **[UI specification (designer handoff)](docs/UI_SPEC.md)** — scope, IA, screen inventory, design-system guidance, and accessibility targets for RaiseOS.
