@@ -1,15 +1,10 @@
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { generateText, Output } from "ai";
 import { z } from "zod";
+import { chatModel, modelConfigured } from "@/lib/ai/openrouter";
+import { isSlideLabelledDeckText } from "@/lib/extract/deck-read";
 import { coerceIntake, type Intake, type Report } from "@/lib/types";
 
-const DEFAULT_MODEL = "google/gemini-3.5-flash-lite";
-
-/** The model is reached through OpenRouter, with an OpenRouter API key. */
-function model() {
-  const openrouter = createOpenRouter({ apiKey: process.env.OPENROUTER_API_KEY });
-  return openrouter(process.env.OPENROUTER_MODEL?.trim() || DEFAULT_MODEL);
-}
+export { modelConfigured } from "@/lib/ai/openrouter";
 
 const intakeSchema = z.object({
   company: z.object({
@@ -50,13 +45,9 @@ const intakeSchema = z.object({
   }),
 });
 
-export function modelConfigured(): boolean {
-  return Boolean(process.env.OPENROUTER_API_KEY?.trim());
-}
-
 const EXTRACT_SYSTEM = [
   "You extract startup facts from a pitch deck for an investor intake form.",
-  "Decks are written as slides: headings, short phrases, charts and callouts. Read them the way an investor would, including text inside images and charts when the file is attached.",
+  "Decks are written as slides: headings, short phrases, charts and callouts. When the input uses \"Slide N:\" lines, treat each block as one slide. Read them the way an investor would; only use an attached PDF when no slide text was provided.",
   "Only use what the deck states. Use an empty string when the deck does not say. Never guess, estimate, calculate or extrapolate a value: an empty field becomes a question for the founders, which is better than a wrong answer.",
   "Keep amounts as the deck writes them, with the currency symbol and unit, for example \"£690M\" or \"£3.1k MRR\". The default currency is pounds: when the deck gives an amount with no currency, write it with £. Use another currency only when the deck clearly states the amount in it, and never convert between currencies.",
   "teamSize is the number of people working at the company, as digits, and only when the deck states a headcount. Do not count the people shown on a team slide, and do not use survey sizes, customer counts or market numbers.",
@@ -83,8 +74,12 @@ export async function enrichIntake(
 ): Promise<{ intake: Intake; filled: string[] } | null> {
   if (!modelConfigured()) return null;
   const text = deckText.trim().slice(0, 60000);
+  const slideLabelled = isSlideLabelledDeckText(text);
   const pdf =
-    options.pdf && options.pdf.length > 0 && options.pdf.length <= MAX_MODEL_PDF_BYTES
+    !slideLabelled &&
+    options.pdf &&
+    options.pdf.length > 0 &&
+    options.pdf.length <= MAX_MODEL_PDF_BYTES
       ? options.pdf
       : null;
   const hasText = text.length >= MIN_TEXT;
@@ -107,7 +102,7 @@ async function extractWithModel(text: string, pdf: Uint8Array | null): Promise<I
     : "No text could be pulled from the deck. Read the attached file.";
   try {
     const { output } = await generateText({
-      model: model(),
+      model: chatModel(),
       timeout: pdf ? 90000 : 45000,
       output: Output.object({ schema: intakeSchema }),
       system: EXTRACT_SYSTEM,
@@ -142,7 +137,7 @@ export async function enrichReportProse(
 
   try {
     const { output } = await generateText({
-      model: model(),
+      model: chatModel(),
       timeout: 30000,
       output: Output.object({
         schema: z.object({

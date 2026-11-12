@@ -1,7 +1,6 @@
 import { randomBytes, randomUUID } from "node:crypto";
 import type { createClient } from "@/lib/supabase/server";
-import { extractPdfText } from "@/lib/extract/pdf";
-import { extractPptxText } from "@/lib/extract/pptx";
+import { MAX_DECK_TEXT_CHARS, readPdfDeck, readPptxDeck } from "@/lib/extract/deck-read";
 import { prefillFromText } from "@/lib/extract/prefill";
 
 export const MAX_DECK_BYTES = 50 * 1024 * 1024;
@@ -25,7 +24,8 @@ export async function ingestDeck(
 
   let text = "";
   try {
-    text = kind === "pdf" ? await extractPdfText(bytes) : await extractPptxText(bytes);
+    const read = kind === "pdf" ? await readPdfDeck(bytes) : await readPptxDeck(bytes);
+    text = read.text;
   } catch {
     return { error: "That file could not be read. Export a fresh PDF and try again.", status: 400 };
   }
@@ -53,7 +53,7 @@ export async function ingestDeck(
     share_token: randomBytes(24).toString("base64url"),
     deck_path: deckPath,
     deck_name: fileName,
-    deck_text: text.slice(0, 80000),
+    deck_text: text.slice(0, MAX_DECK_TEXT_CHARS),
     extraction_mode: "rules",
     extraction_note: prefill.thin
       ? "Little text came out of this deck. Image-only slides have to be filled in by hand."

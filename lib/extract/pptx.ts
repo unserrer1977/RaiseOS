@@ -1,6 +1,6 @@
 import JSZip from "jszip";
 
-export async function extractPptxText(data: Uint8Array): Promise<string> {
+export async function extractPptxPages(data: Uint8Array): Promise<string[]> {
   const zip = await JSZip.loadAsync(data);
   const names = Object.keys(zip.files)
     .filter((name) => /ppt\/slides\/slide\d+\.xml$/.test(name))
@@ -12,9 +12,14 @@ export async function extractPptxText(data: Uint8Array): Promise<string> {
     const bits = [...xml.matchAll(/<a:t[^>]*>([^<]*)<\/a:t>/g)].map((match) =>
       decodeXml(match[1]),
     );
-    if (bits.length > 0) slides.push(bits.join("\n"));
+    slides.push(bits.length > 0 ? bits.join("\n") : "");
   }
-  return slides.join("\n");
+  return slides;
+}
+
+export async function extractPptxText(data: Uint8Array): Promise<string> {
+  const slides = await extractPptxPages(data);
+  return slides.filter((slide) => slide.length > 0).join("\n");
 }
 
 export async function buildPptx(lines: string[]): Promise<Uint8Array> {

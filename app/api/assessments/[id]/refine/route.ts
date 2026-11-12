@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { enrichIntake, modelConfigured } from "@/lib/ai/enrich";
+import { isSlideLabelledDeckText } from "@/lib/extract/deck-read";
 import { getSessionUser } from "@/lib/auth";
 import { rowToAssessment } from "@/lib/assessments";
 import { coerceIntake, type FieldSource } from "@/lib/types";
@@ -35,7 +36,12 @@ export async function POST(
 
   // Send the PDF itself when we can, so image-only slides are read too.
   let pdf: Uint8Array | null = null;
-  if (modelConfigured() && row.deck_path?.toLowerCase().endsWith(".pdf")) {
+  const deckText = row.deck_text ?? "";
+  if (
+    modelConfigured() &&
+    !isSlideLabelledDeckText(deckText) &&
+    row.deck_path?.toLowerCase().endsWith(".pdf")
+  ) {
     const { data: file, error: downloadError } = await supabase.storage
       .from("decks")
       .download(row.deck_path);
