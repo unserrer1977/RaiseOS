@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { AlertCircleIcon, LinkIcon, UploadFileIcon, WarningIcon } from "@/components/icons";
+import { AlertCircleIcon, LinkIcon, UploadFileIcon } from "@/components/icons";
 
 type Mode = "file" | "link";
 
@@ -50,7 +50,7 @@ export function AngelUploader() {
         setMode(value);
         setError("");
       }}
-      className={`min-h-10 rounded-full px-4 text-sm ${
+      className={`min-h-11 rounded-full px-4 text-sm ${
         mode === value ? "bg-ink text-paper" : "text-muted hover:text-ink"
       }`}
     >
@@ -89,7 +89,7 @@ export function AngelUploader() {
             {dragging ? "Release to upload" : "Drop the founder’s deck"}
           </span>
           <span className="max-w-sm text-sm text-muted">
-            PDF or PPTX, up to 50MB. Keynote needs a PDF export. No account or password needed.
+            PDF or PPTX, up to 50 MB. Keynote needs a PDF export. No account or password needed.
           </span>
           <input
             type="file"
@@ -131,9 +131,9 @@ export function AngelUploader() {
               className="mt-2 w-full border-0 border-b border-line-strong bg-transparent py-3 text-lg text-ink outline-none focus:border-accent"
             />
           </label>
-          <p className="flex items-start gap-2.5 rounded-xl border border-warn/25 bg-warn-tint/60 px-3.5 py-3 text-sm text-warn">
+          <p role="status" className="flex items-start gap-2.5 rounded-xl border border-warn/25 bg-warn-tint/60 px-3.5 py-3 text-sm text-warn">
             <span className="mt-0.5 shrink-0">
-              <WarningIcon />
+              <AlertCircleIcon />
             </span>
             <span>
               Please check the link doesn’t need a password, sign-in or email to open. We can only read decks

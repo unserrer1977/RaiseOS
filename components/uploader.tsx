@@ -50,7 +50,7 @@ export function Uploader() {
           {dragging ? "Release to upload" : "Drop the deck"}
         </span>
         <span className="max-w-sm text-sm text-muted">
-          PDF or PPTX, up to 50MB. Keynote needs a PDF export. The file stays in your private storage
+          PDF or PPTX, up to 50 MB. Keynote needs a PDF export. The file stays in your private storage
           and is not used to train a model.
         </span>
         <input
@@ -68,8 +68,10 @@ export function Uploader() {
         </span>
       </label>
       {error ? (
-        <p className="mt-4 flex items-center gap-2 text-sm text-danger" role="alert">
-          <AlertCircleIcon size={16} />
+        <p className="mt-4 flex items-start gap-2 text-sm text-danger" role="alert">
+          <span className="mt-0.5 shrink-0">
+            <AlertCircleIcon size={16} />
+          </span>
           {error}
         </p>
       ) : null}
