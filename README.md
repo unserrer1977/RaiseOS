@@ -11,7 +11,7 @@ RaiseOS turns a pitch deck into a five-pillar intake, at most four venture follo
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SECRET_KEY` (server only, used to resolve a share link to the finished report)
-- `AI_GATEWAY_API_KEY` (optional; without it, deck prefill and the report stay on the deterministic rules)
+- `AI_GATEWAY_API_KEY` (optional; without it, deck prefill and the report stay on the deterministic rules). When set, PDF uploads also run per-slide text extraction and OCR on image-only pages (adapted from angelosmt’s deck reader); intake refinement then uses slide-labelled text instead of re-attaching the PDF.
 
 4. `npm run dev`. Set the public Supabase variables before `npm run build` as well; Next.js inlines `NEXT_PUBLIC_` values at build time.
 

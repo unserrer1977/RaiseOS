@@ -1,5 +1,6 @@
 import { generateText, Output } from "ai";
 import { z } from "zod";
+import { isSlideLabelledDeckText } from "@/lib/extract/deck-read";
 import { coerceIntake, type Intake, type Report } from "@/lib/types";
 
 const MODEL = "google/gemini-3.5-flash-lite";
@@ -50,7 +51,7 @@ export function modelConfigured(): boolean {
 
 const EXTRACT_SYSTEM = [
   "You extract startup facts from a pitch deck for an investor intake form.",
-  "Decks are written as slides: headings, short phrases, charts and callouts. Read them the way an investor would, including text inside images and charts when the file is attached.",
+  "Decks are written as slides: headings, short phrases, charts and callouts. When the input uses \"Slide N:\" lines, treat each block as one slide. Read them the way an investor would; only use an attached PDF when no slide text was provided.",
   "Only use what the deck states. Use an empty string when the deck does not say. Never guess or invent a metric.",
   "Keep amounts as the deck writes them, with the currency symbol and unit, for example \"£690M\" or \"$3.1k MRR\".",
   "teamSize is the number of people working at the company, as digits. Do not use survey sizes, customer counts or market numbers. If the deck only shows named team members, count them.",
@@ -77,8 +78,12 @@ export async function enrichIntake(
 ): Promise<{ intake: Intake; filled: string[] } | null> {
   if (!modelConfigured()) return null;
   const text = deckText.trim().slice(0, 60000);
+  const slideLabelled = isSlideLabelledDeckText(text);
   const pdf =
-    options.pdf && options.pdf.length > 0 && options.pdf.length <= MAX_MODEL_PDF_BYTES
+    !slideLabelled &&
+    options.pdf &&
+    options.pdf.length > 0 &&
+    options.pdf.length <= MAX_MODEL_PDF_BYTES
       ? options.pdf
       : null;
   const hasText = text.length >= MIN_TEXT;

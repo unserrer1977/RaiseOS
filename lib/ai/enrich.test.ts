@@ -65,6 +65,18 @@ describe("enrichIntake", () => {
     expect(result?.filled).toEqual(["company.legalName"]);
   });
 
+  it("uses slide-labelled deck text without attaching the PDF", async () => {
+    generateText.mockResolvedValue(modelSays((intake) => (intake.problem.tam = "£690M")));
+    const labelled = `Slide 1: Noticed — the memory layer for busy families.\n\nSlide 2: TAM: £690M. SAM: £120M. We surveyed 500 parents and closed 12 design partners.`;
+    const result = await enrichIntake(labelled, emptyIntake(), {
+      pdf: new Uint8Array([37, 80, 68, 70, 45]),
+    });
+    expect(generateText).toHaveBeenCalledTimes(1);
+    const content = generateText.mock.calls[0][0].messages[0].content;
+    expect(content.some((part: { type: string }) => part.type === "file")).toBe(false);
+    expect(result?.intake.problem.tam).toBe("£690M");
+  });
+
   it("does nothing without a key", async () => {
     delete process.env.AI_GATEWAY_API_KEY;
     expect(await enrichIntake(DECK, emptyIntake())).toBeNull();
