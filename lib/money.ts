@@ -13,10 +13,13 @@ const UNIT: Record<string, number> = {
   trillion: 1e12,
 };
 
+/** Amounts are in pounds unless the deck clearly uses another currency. */
+export const DEFAULT_CURRENCY = "£";
+
 export interface MoneyMatch {
   amount: number;
   monthly: boolean;
-  /** The symbol the amount was written with: "$", "£" or "€". */
+  /** The symbol the amount was written with, or £ when it had none. */
   currency: string;
 }
 
@@ -31,7 +34,7 @@ export function parseMoney(input: string): MoneyMatch | null {
   const unit = (match[2] ?? "").toLowerCase();
   const amount = value * (UNIT[unit] ?? 1);
   const monthly = /\/\s*(mo|month)|per\s+month/i.test(input);
-  const currency = input.match(/[$£€]/)?.[0] ?? "$";
+  const currency = input.match(/[$£€]/)?.[0] ?? DEFAULT_CURRENCY;
   return { amount, monthly, currency };
 }
 
@@ -46,7 +49,7 @@ export function parsePercent(input: string): number | null {
   return value;
 }
 
-export function formatMoney(amount: number, currency = "$"): string {
+export function formatMoney(amount: number, currency = DEFAULT_CURRENCY): string {
   if (amount >= 1e12) return `${currency}${trimNumber(amount / 1e12)}T`;
   if (amount >= 1e9) return `${currency}${trimNumber(amount / 1e9)}B`;
   if (amount >= 1e6) return `${currency}${trimNumber(amount / 1e6)}M`;

@@ -140,7 +140,7 @@ function redFlagCopy(miss: Miss, intake: Intake): string {
   switch (miss) {
     case "market":
       return tam
-        ? `TAM of ${formatMoney(tam.amount, tam.currency)} is below the $1B venture bar, and the follow-up did not describe a larger market.`
+        ? `TAM of ${formatMoney(tam.amount, tam.currency)} is below the ${tam.currency}1B venture bar, and the follow-up did not describe a larger market.`
         : "Market size is still unknown.";
     case "gtm":
       return "Enterprise motion paired with a low price, without a product-led distribution answer.";

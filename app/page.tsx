@@ -24,7 +24,7 @@ const VERDICTS = [
   {
     kicker: "Venture fit",
     title: "Highly Fundable",
-    body: "No structural gaps, a market that can carry a $1B outcome, and traction on the page.",
+    body: "No structural gaps, a market that can carry a £1B outcome, and traction on the page.",
     tone: "text-accent",
     Icon: CheckCircleIcon,
   },

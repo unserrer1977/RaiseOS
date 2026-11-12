@@ -58,7 +58,7 @@ const EXTRACT_SYSTEM = [
   "You extract startup facts from a pitch deck for an investor intake form.",
   "Decks are written as slides: headings, short phrases, charts and callouts. Read them the way an investor would, including text inside images and charts when the file is attached.",
   "Only use what the deck states. Use an empty string when the deck does not say. Never guess, estimate, calculate or extrapolate a value: an empty field becomes a question for the founders, which is better than a wrong answer.",
-  "Keep amounts as the deck writes them, with the currency symbol and unit, for example \"£690M\" or \"$3.1k MRR\".",
+  "Keep amounts as the deck writes them, with the currency symbol and unit, for example \"£690M\" or \"£3.1k MRR\". The default currency is pounds: when the deck gives an amount with no currency, write it with £. Use another currency only when the deck clearly states the amount in it, and never convert between currencies.",
   "teamSize is the number of people working at the company, as digits, and only when the deck states a headcount. Do not count the people shown on a team slide, and do not use survey sizes, customer counts or market numbers.",
   "country is the country the company is based in, written in full, for example \"United Kingdom\". Fill it only when the deck says where the company is based or registered, or names a scheme only companies in that country can use, such as SEIS or EIS for the United Kingdom. Do not infer it from the currency, the language or where the customers are.",
   "amountRaised is money already raised or committed, not the size of the round being asked for.",
