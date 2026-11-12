@@ -1,0 +1,28 @@
+Northstar Labs
+Legal name: Northstar Labs Inc.
+Founded: March 2024
+Headquarters: Austin, TX
+Team size: 6
+Founders: Ada Okonkwo, former payments lead at Stripe. Ben Cho, robotics PhD.
+Problem: Mid-market warehouses lose 8 hours a week reconciling inventory.
+Target customer: Enterprise warehouse operators
+Solution: Software that reconciles scanner data overnight. SaaS subscription.
+Value proposition: Overnight inventory truth without a new warehouse system.
+TAM: $100M
+SAM: $40M
+SOM: $8M
+Price: $50/month
+Customer type: Enterprise B2B
+CAC: $4000
+LTV: $900
+Channels: Outbound sales
+Sales cycle: 90 days
+MRR: $12000
+MoM growth: 18%
+Active users: 40
+Churn: 2%
+Raised: $1.5M
+Stage: Seed
+Valuation: $12M cap
+Founder equity: 28%
+Investors: Precursor, local angels
