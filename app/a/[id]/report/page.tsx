@@ -20,7 +20,15 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
 
   return (
     <Frame email={user.email}>
-      <ReportView report={row.report} shareUrl={shareUrl} />
+      <ReportView
+        report={row.report}
+        shareUrl={shareUrl}
+        dateLabel={new Date(row.updated_at).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })}
+      />
     </Frame>
   );
 }
