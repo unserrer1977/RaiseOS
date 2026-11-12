@@ -179,7 +179,7 @@ function request(url: URL): Promise<{
       {
         method: "GET",
         lookup: safeLookup as never,
-        headers: { "User-Agent": "RaiseOS deck fetcher", Accept: "application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,*/*" },
+        headers: { "User-Agent": "Raise Insight deck fetcher", Accept: "application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,*/*" },
         timeout: TIMEOUT_MS,
       },
       (res) => {

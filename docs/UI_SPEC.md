@@ -1,10 +1,10 @@
-# RaiseOS — UI specification (designer handoff)
+# Raise Insight by Angel OS — UI specification (designer handoff)
 
 **Version:** 1.0  
 **Last updated:** 2026-11-06  
 **Audience:** Product design, visual design, content design, design engineering  
 
-This document is the single source of truth for what to design for **RaiseOS**. The codebase today is a placeholder; **product goals in §2 must be confirmed with stakeholders** before high-fidelity visuals are locked.
+This document is the single source of truth for what to design for **Raise Insight by Angel OS**. The codebase today is a placeholder; **product goals in §2 must be confirmed with stakeholders** before high-fidelity visuals are locked.
 
 ---
 
@@ -20,7 +20,7 @@ This document is the single source of truth for what to design for **RaiseOS**. 
 
 ## 2. Product definition (confirm with stakeholder)
 
-**Working name:** RaiseOS  
+**Product name:** Raise Insight by Angel OS  
 
 **One-line pitch (draft — replace):**  
 A focused workspace that helps teams **[define primary job-to-be-done]** with clear **[core objects, e.g. campaigns, donors, goals]** and actionable **[primary workflows]**.
@@ -53,7 +53,7 @@ A focused workspace that helps teams **[define primary job-to-be-done]** with cl
 
 ## 4. Information architecture (IA)
 
-**Assumption:** web app with authenticated and marketing surfaces. Adjust if RaiseOS is internal-only or single-page.
+**Assumption:** web app with authenticated and marketing surfaces. Adjust if Raise Insight is internal-only or single-page.
 
 ```text
 /                      Marketing / landing (optional for MVP)
@@ -269,7 +269,7 @@ Provide **copy deck** (Google Sheet or Figma comments) keyed to screen IDs from 
 
 ## 13. Open questions (track in Figma or issue tracker)
 
-1. What is the **exact primary object** and **core workflow** for RaiseOS?  
+1. What is the **exact primary object** and **core workflow** for Raise Insight?  
 2. **Multi-user** from day one? Roles?  
 3. **Mobile web** priority vs desktop-only for MVP?  
 4. **Internationalization** (languages, RTL) in MVP or later?  

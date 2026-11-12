@@ -1,42 +1,68 @@
 @import "tailwindcss";
 
+/* Raise Insight by Angel OS.
+   Tokens follow the Angel OS design system: warm off-white canvas, white
+   cards, thin warm-grey lines, near-black ink and one golden-yellow accent. */
+
 :root {
-  --paper: #f3efe6;
-  --ink: #1a1714;
-  --muted: #6e675e;
-  --line: #e3dcd0;
-  --line-strong: #cfc5b4;
-  --card: #fbf9f5;
-  --accent: #0e6b52;
-  --accent-tint: #e6f0eb;
-  --danger: #8d2f2f;
-  --danger-tint: #f4e4e1;
-  --warn: #8a4f12;
-  --warn-tint: #f6ebdd;
-  --placeholder: #8f877c;
+  --paper: hsl(60 13% 95%);
+  --card: hsl(0 0% 100%);
+  --secondary: hsl(60 12% 92%);
+  --ink: hsl(218 20% 8%);
+  --muted: hsl(219 10% 32%);
+  --placeholder: hsl(219 7% 49%);
+  --line: hsl(60 10% 88%);
+  --line-strong: hsl(60 8% 81%);
+
+  --accent: hsl(45 96% 48%);
+  --accent-soft: hsl(47 90% 88%);
+  --accent-ink: hsl(44 100% 21%);
+
+  --success: hsl(157 79% 27%);
+  --success-tint: hsl(157 45% 92%);
+  --warn: hsl(34 100% 31%);
+  --warn-tint: hsl(40 90% 91%);
+  --danger: hsl(7 72% 44%);
+  --danger-tint: hsl(7 80% 95%);
 }
 
 @theme inline {
   --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-secondary: var(--secondary);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
-  --color-card: var(--card);
   --color-accent: var(--accent);
-  --color-accent-tint: var(--accent-tint);
-  --color-danger: var(--danger);
-  --color-danger-tint: var(--danger-tint);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-success: var(--success);
+  --color-success-tint: var(--success-tint);
   --color-warn: var(--warn);
   --color-warn-tint: var(--warn-tint);
-  --font-sans: var(--font-outfit), system-ui, sans-serif;
-  --font-serif: var(--font-fraunces), Georgia, serif;
+  --color-danger: var(--danger);
+  --color-danger-tint: var(--danger-tint);
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --shadow-sm: 0 1px 2px hsl(216 20% 8% / 0.05);
+  --shadow-md: 0 4px 12px -2px hsl(222 47% 15% / 0.1);
 }
 
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.01em;
 }
 
 input::placeholder,
@@ -46,8 +72,8 @@ textarea::placeholder {
 
 :where(a, button, input, select, textarea, summary):focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 4px;
-  border-radius: 2px;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 @media (prefers-reduced-motion: reduce) {

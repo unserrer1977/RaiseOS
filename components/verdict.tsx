@@ -7,9 +7,9 @@ export const VERDICT_STYLE: Record<
 > = {
   highly_fundable: {
     kicker: "Venture fit",
-    text: "text-accent",
-    tint: "bg-accent-tint",
-    border: "border-accent",
+    text: "text-success",
+    tint: "bg-success-tint",
+    border: "border-success",
   },
   borderline: {
     kicker: "One gap",
@@ -35,7 +35,7 @@ export function VerdictPill({ verdict, label }: { verdict: Verdict; label: strin
   const style = VERDICT_STYLE[verdict];
   return (
     <span
-      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1 text-[13px] ${style.border} ${style.text}`}
+      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium ${style.tint} ${style.text}`}
     >
       <VerdictIcon verdict={verdict} size={14} />
       {label}

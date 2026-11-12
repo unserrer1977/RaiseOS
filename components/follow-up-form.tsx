@@ -68,8 +68,8 @@ export function FollowUpForm({
 
   return (
     <div>
-      <p className="text-[13px] uppercase tracking-[0.16em] text-muted">{copy.kicker}</p>
-      <h1 className="mt-3 font-serif text-4xl leading-tight text-ink sm:text-[40px]">
+      <p className="font-mono text-xs uppercase tracking-[0.08em] text-muted">{copy.kicker}</p>
+      <h1 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.02em] text-ink sm:text-4xl">
         {copy.title}
       </h1>
       <p className="mt-4 max-w-xl text-muted">{copy.count(answers.length)}</p>
@@ -79,15 +79,15 @@ export function FollowUpForm({
           const pillar = PILLARS.find((entry) => entry.id === item.pillar)?.kicker ?? "";
           return (
             <li key={item.id} className="flex gap-5">
-              <span aria-hidden="true" className="w-7 shrink-0 font-serif text-xl text-accent">
+              <span aria-hidden="true" className="w-7 shrink-0 font-mono text-sm text-muted">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <label className="flex min-w-0 flex-1 flex-col gap-2">
-                <span className="text-xs uppercase tracking-[0.14em] text-muted">
+                <span className="font-mono text-xs uppercase tracking-[0.08em] text-muted">
                   {pillar ? `${pillar} · ` : ""}
                   {TOPIC[item.id] ?? item.id.replaceAll("_", " ")}
                 </span>
-                <span className="font-serif text-2xl leading-snug text-ink">{item.question}</span>
+                <span className="text-lg font-medium leading-snug text-ink">{item.question}</span>
                 <span className="text-sm text-muted">{copy.why}: {lowerFirst(item.reason)}</span>
                 <textarea
                   value={item.answer}
@@ -100,7 +100,7 @@ export function FollowUpForm({
                       ),
                     )
                   }
-                  className="mt-2 w-full resize-none border-0 border-b border-line-strong bg-transparent py-3 text-lg leading-normal outline-none focus:border-accent"
+                  className="mt-2 w-full resize-none py-2.5 leading-normal rounded-md border border-line-strong bg-card px-3 text-base text-ink shadow-sm outline-none focus:border-ink focus:ring-2 focus:ring-accent/50"
                 />
               </label>
             </li>
@@ -120,7 +120,7 @@ export function FollowUpForm({
           type="button"
           onClick={() => void onSubmit()}
           disabled={pending}
-          className="min-h-12 rounded-full bg-ink px-7 text-[15px] text-paper disabled:opacity-60"
+          className="min-h-12 rounded-md font-medium bg-ink px-7 text-[15px] text-white disabled:opacity-60"
         >
           {pending ? "Writing the report…" : "See the assessment"}
         </button>
