@@ -94,13 +94,37 @@ export async function submitIntake(
 ) {
   const saved = await saveIntake(id, intake, sources);
   if ("error" in saved && saved.error) return saved;
-  const clean = coerceIntake(intake);
-  const followUps = selectFollowUps(clean);
+  return routeAfterIntakeReady(id, coerceIntake(intake), flow);
+}
+
+/** After deck refine: score venture fit and send the angel to gaps or the report. */
+export async function advanceAngelAssessment(id: string) {
+  const { supabase, user } = await getSessionUser();
+  if (!supabase || !user) return { error: "Sign in required." };
+  const { data, error } = await supabase
+    .from("assessments")
+    .select("*")
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (error || !data) return { error: "Assessment not found." };
+  const row = rowToAssessment(data);
+  if (row.status === "complete") {
+    redirect(`/angel/a/${id}/report`);
+  }
+  if (row.status === "followup") {
+    redirect(`/angel/a/${id}/follow-up`);
+  }
+  return routeAfterIntakeReady(id, row.intake, "angel");
+}
+
+async function routeAfterIntakeReady(id: string, intake: Intake, flow: Flow) {
+  const followUps = selectFollowUps(intake);
   const { supabase, user } = await getSessionUser();
   if (!supabase || !user) return { error: "Sign in required." };
 
   if (followUps.length === 0) {
-    const report = await finalize(id, clean, followUps);
+    const report = await finalize(id, intake, followUps);
     const { error } = await supabase
       .from("assessments")
       .update({
