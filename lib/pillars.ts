@@ -23,7 +23,7 @@ export const PILLARS: PillarDef[] = [
     kicker: "Company",
     title: "Who is building this?",
     fields: [
-      { key: "legalName", label: "Legal name", placeholder: "Northstar Labs Inc." },
+      { key: "legalName", label: "Legal name", placeholder: "Northstar Labs Ltd" },
       { key: "country", label: "Country", placeholder: "United Kingdom" },
       { key: "teamSize", label: "Team size", placeholder: "6" },
       {
@@ -44,9 +44,9 @@ export const PILLARS: PillarDef[] = [
       { key: "customerProfile", label: "Target customer", placeholder: "Who pays" },
       { key: "valueProposition", label: "Value proposition", placeholder: "Why they switch", kind: "textarea" },
       { key: "solution", label: "Solution", placeholder: "What the product actually is", kind: "textarea" },
-      { key: "tam", label: "TAM", placeholder: "$1.2B" },
-      { key: "sam", label: "SAM", placeholder: "$400M" },
-      { key: "som", label: "SOM", placeholder: "$40M" },
+      { key: "tam", label: "TAM", placeholder: "£1.2B" },
+      { key: "sam", label: "SAM", placeholder: "£400M" },
+      { key: "som", label: "SOM", placeholder: "£40M" },
     ],
   },
   {
@@ -62,9 +62,9 @@ export const PILLARS: PillarDef[] = [
         kind: "select",
         options: [{ value: "", label: "Select" }, ...CUSTOMER_TYPES],
       },
-      { key: "priceOrAcv", label: "Price or ACV", placeholder: "$50/month or $24k ACV" },
-      { key: "cac", label: "CAC", placeholder: "$4,000" },
-      { key: "ltv", label: "LTV", placeholder: "$18,000" },
+      { key: "priceOrAcv", label: "Price or ACV", placeholder: "£50/month or £24k ACV" },
+      { key: "cac", label: "CAC", placeholder: "£4,000" },
+      { key: "ltv", label: "LTV", placeholder: "£18,000" },
       { key: "channels", label: "Distribution channels", placeholder: "Outbound, PLG, partners" },
       { key: "salesCycle", label: "Sales cycle", placeholder: "90 days" },
     ],
@@ -75,7 +75,7 @@ export const PILLARS: PillarDef[] = [
     title: "What is already true?",
     angelTitle: "What have they proven so far?",
     fields: [
-      { key: "mrrOrGmv", label: "MRR or GMV", placeholder: "$12,000 MRR" },
+      { key: "mrrOrGmv", label: "MRR or GMV", placeholder: "£12,000 MRR" },
       { key: "momGrowth", label: "MoM growth", placeholder: "18%" },
       { key: "activeUsers", label: "Active users", placeholder: "40" },
       { key: "churn", label: "Churn", placeholder: "2%" },
@@ -87,7 +87,7 @@ export const PILLARS: PillarDef[] = [
     title: "Who owns the company?",
     angelTitle: "Who owns it, and on what terms?",
     fields: [
-      { key: "amountRaised", label: "Total raised", placeholder: "$1.5M" },
+      { key: "amountRaised", label: "Total raised", placeholder: "£1.5M" },
       {
         key: "stage",
         label: "Stage",
@@ -95,7 +95,7 @@ export const PILLARS: PillarDef[] = [
         kind: "select",
         options: [{ value: "", label: "Select" }, ...STAGES],
       },
-      { key: "valuationOrCap", label: "Valuation or cap", placeholder: "$12M cap" },
+      { key: "valuationOrCap", label: "Valuation or cap", placeholder: "£12M cap" },
       { key: "founderEquityPercent", label: "Founder equity", placeholder: "70%" },
       { key: "notableInvestors", label: "Existing investors", placeholder: "Names, or none yet" },
     ],

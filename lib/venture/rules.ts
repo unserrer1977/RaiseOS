@@ -23,10 +23,10 @@ export function selectFollowUps(intake: Intake): FollowUp[] {
       id: "market_scale",
       pillar: "problem",
       question: tam
-        ? `Given the ${formatMoney(tam.amount, tam.currency)} TAM, how do you plan to achieve a venture-scale exit ($1B+ valuation), or are you planning to expand into adjacent markets?`
+        ? `Given the ${formatMoney(tam.amount, tam.currency)} TAM, how do you plan to achieve a venture-scale exit (${tam.currency}1B+ valuation), or are you planning to expand into adjacent markets?`
         : "The deck does not size the market, and the customer looks narrow. What is the TAM, and is there an adjacent market that supports a venture-scale exit?",
       reason: tam
-        ? "Venture funds need a market that can support a $1B+ outcome."
+        ? `Venture funds need a market that can support a ${tam.currency}1B+ outcome.`
         : "Market size is missing and the customer description is narrow.",
       answer: "",
     });

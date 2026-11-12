@@ -21,6 +21,9 @@ describe("parseMoney", () => {
 describe("formatMoney", () => {
   it("writes the amount back in the deck's currency", () => {
     expect(formatMoney(10e9, "£")).toBe("£10B");
-    expect(formatMoney(100e6)).toBe("$100M");
+    expect(formatMoney(100e6, "$")).toBe("$100M");
+    // Pounds when nothing says otherwise.
+    expect(formatMoney(100e6)).toBe("£100M");
+    expect(parseMoney("4000")?.currency).toBe("£");
   });
 });
