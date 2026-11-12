@@ -1,8 +1,8 @@
 import { formatMoney, parseMoney, parsePercent } from "@/lib/money";
 import type { FollowUp, Intake } from "@/lib/types";
 
-/** The list is never shorter than this; missing information can make it longer. */
-export const FOUNDER_QUESTION_COUNT = 10;
+/** Minimum tailored + standard questions on the angel report. */
+export const FOUNDER_QUESTION_MIN = 8;
 
 interface Candidate {
   topic: string;
@@ -189,7 +189,7 @@ export function buildFounderQuestions(intake: Intake, followUps: FollowUp[]): st
     });
   }
 
-  // 3. Standard angel diligence, used to make up the ten.
+  // 3. Standard angel diligence, used to reach the minimum list length.
   const standard: Candidate[] = [
     { topic: "terms", question: "What are the terms of this round, and how much is already committed?" },
     { topic: "funds", question: "How will you spend this money, and what milestones will it get you to before the next raise?" },
@@ -214,7 +214,7 @@ export function buildFounderQuestions(intake: Intake, followUps: FollowUp[]): st
     result.push(candidate.question);
   }
   for (const candidate of standard) {
-    if (result.length >= FOUNDER_QUESTION_COUNT) break;
+    if (result.length >= FOUNDER_QUESTION_MIN) break;
     if (seen.has(candidate.topic)) continue;
     seen.add(candidate.topic);
     result.push(candidate.question);

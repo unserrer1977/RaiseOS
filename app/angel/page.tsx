@@ -18,15 +18,15 @@ export const metadata: Metadata = {
 const STEPS = [
   {
     title: "Share the deck",
-    body: "Upload the PDF or PPTX the founder sent you, or paste a link. Raise Insight reads it and fills a five-part intake: company, problem, go-to-market, traction and cap table.",
+    body: "Upload the PDF or PPTX the founder sent you, or paste a link. Raise Insight reads the slides and fills the assessment in the background.",
   },
   {
-    title: "Fill in what you know",
-    body: "Check the numbers, then answer up to four questions that appear only where the venture story breaks. Blanks become the questions to ask the founder.",
+    title: "Answer only what the deck cannot",
+    body: "If the venture story still has a gap, you will see at most four short questions — things only you would know from calls with the founder.",
   },
   {
-    title: "Decide with a clear read",
-    body: "A report with green and red flags, a SWOT and what the verdict means for you as an angel. Share it with a co-investor or save it as a PDF.",
+    title: "Venture backable + founder questions",
+    body: "A plain verdict on whether this can return like a venture bet, plus a copyable list of questions to ask the founders. Share it with a co-investor or save as PDF.",
   },
 ];
 
@@ -57,7 +57,7 @@ const VERDICTS = [
 const BENEFITS = [
   {
     title: "Minutes, not evenings",
-    body: "The deck does most of the typing. You check the numbers and add what the founder told you.",
+    body: "The deck does the reading. You only answer a few gaps if the venture story still breaks.",
   },
   {
     title: "Know what to ask",
@@ -141,9 +141,8 @@ export default async function AngelPage() {
               Is this deal right for you? Get a partner’s read before you write the cheque.
             </h1>
             <p className="max-w-xl text-lg text-muted sm:text-[19px]">
-              Upload the founder’s deck or paste a link. Raise Insight fills the intake, asks at most four questions
-              where the story doesn’t hold, and tells you whether the opportunity has the shape of a
-              venture-scale return.
+              Upload the founder’s deck or paste a link. Raise Insight reads it, asks at most four gap questions where
+              only you can fill in the story, then tells you whether it is venture backable and what to ask the founders.
             </p>
             <p className="text-sm text-muted">No account, no password. The deck stays in private storage and is not used to train a model.</p>
           </div>
@@ -181,7 +180,7 @@ export default async function AngelPage() {
                           <VerdictPill verdict={report.verdict} label={report.verdictLabel} />
                         ) : (
                           <span className="whitespace-nowrap rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-muted">
-                            {row.status === "followup" ? "Questions open" : "In progress"}
+                            {row.status === "followup" ? "Quick questions" : "Reading deck"}
                           </span>
                         )}
                       </Link>

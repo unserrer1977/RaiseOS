@@ -40,9 +40,9 @@ describe("buildFounderQuestions", () => {
     expect(questions).toContain("What is the company’s registered legal name?");
   });
 
-  it("returns ten standard questions for a complete intake", () => {
+  it("returns eight standard questions for a complete intake", () => {
     const questions = buildFounderQuestions(coerceIntake(COMPLETE), []);
-    expect(questions).toHaveLength(10);
+    expect(questions).toHaveLength(8);
     expect(questions).not.toContain("Which country is the company registered and based in?");
   });
 
@@ -58,7 +58,7 @@ describe("buildFounderQuestions", () => {
       "How many people work on this today, including the founders, and how many are full-time?",
       "How long does it take to win a customer, from first conversation to signed contract?",
     ]);
-    expect(questions).toHaveLength(10);
+    expect(questions).toHaveLength(8);
   });
 
   it("puts unanswered follow-ups first and skips answered ones", () => {

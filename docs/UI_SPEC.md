@@ -72,6 +72,18 @@ A focused workspace that helps teams **[define primary job-to-be-done]** with cl
 
 Deliverable: **site map diagram** in Figma + this list kept in sync.
 
+### 4.1 Angel flow (Raise Insight for angels)
+
+Public, no account. Deck-first — no five-pillar intake wizard for angels.
+
+```text
+/angel                         Landing + upload / paste link
+/angel/a/:id                   Processing (deck read + model refine + route)
+/angel/a/:id/follow-up         Optional: 0–4 venture gap questions for the angel
+/angel/a/:id/report            Verdict, founder questions, flags (SWOT collapsed)
+/s/:token                      Share link (report only)
+```
+
 ---
 
 ## 5. Global layout & shell

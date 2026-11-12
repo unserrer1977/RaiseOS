@@ -111,37 +111,41 @@ export function ReportView({
             {ANGEL_READING[report.verdict]?.title}
           </h2>
           <p className="max-w-2xl leading-relaxed text-ink">{ANGEL_READING[report.verdict]?.body}</p>
-          {report.redFlags.length > 0 && report.verdict !== "highly_fundable" ? (
+          {founderQuestions && founderQuestions.length > 0 ? (
             <p className="max-w-2xl text-[15px] text-muted">
-              The red flags below are the questions to put to the founder first.
+              The founder questions below come from gaps in the deck and structural risks in the venture read.
             </p>
           ) : null}
         </section>
       ) : null}
+
+      {flow === "angel" && founderQuestions && founderQuestions.length > 0 ? (
+        <FounderQuestions companyName={report.companyName} questions={founderQuestions} />
+      ) : null}
+
+      <div className="grid gap-5 sm:grid-cols-2 border-t border-line pt-8">
+        <FlagList title="Green flags" items={report.greenFlags} tone="good" />
+        <FlagList title="Red flags" items={report.redFlags} tone="bad" />
+      </div>
 
       <section className="flex flex-col gap-3 border-t border-line pt-8">
         <h2 className="text-xl font-semibold">Venture scale</h2>
         <p className="max-w-2xl leading-relaxed text-ink">{report.ventureScale}</p>
       </section>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <FlagList title="Green flags" items={report.greenFlags} tone="good" />
-        <FlagList title="Red flags" items={report.redFlags} tone="bad" />
-      </div>
-
-      {flow === "angel" && founderQuestions && founderQuestions.length > 0 ? (
-        <FounderQuestions companyName={report.companyName} questions={founderQuestions} />
-      ) : null}
-
-      <section className="flex flex-col gap-5">
-        <h2 className="text-xl font-semibold">SWOT</h2>
-        <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-          <Swot title="Strengths" items={report.swot.strengths} />
-          <Swot title="Weaknesses" items={report.swot.weaknesses} />
-          <Swot title="Opportunities" items={report.swot.opportunities} />
-          <Swot title="Threats" items={report.swot.threats} />
-        </div>
-      </section>
+      {flow === "angel" ? (
+        <details className="group border-t border-line pt-8">
+          <summary className="cursor-pointer text-xl font-semibold text-ink">More detail (SWOT)</summary>
+          <div className="mt-5">
+            <SwotGrid report={report} />
+          </div>
+        </details>
+      ) : (
+        <section className="flex flex-col gap-5">
+          <h2 className="text-xl font-semibold">SWOT</h2>
+          <SwotGrid report={report} />
+        </section>
+      )}
 
       {owner && flow === "angel" ? (
         <div className="no-print flex flex-col gap-4 border-t border-line pt-6">
@@ -257,6 +261,17 @@ function FlagList({
         ))}
       </ul>
     </section>
+  );
+}
+
+function SwotGrid({ report }: { report: Report }) {
+  return (
+    <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+      <Swot title="Strengths" items={report.swot.strengths} />
+      <Swot title="Weaknesses" items={report.swot.weaknesses} />
+      <Swot title="Opportunities" items={report.swot.opportunities} />
+      <Swot title="Threats" items={report.swot.threats} />
+    </div>
   );
 }
 
