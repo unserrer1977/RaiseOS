@@ -15,9 +15,9 @@ export function Frame({
     <div className="mx-auto min-h-full w-full max-w-3xl px-5 py-8">
       <header className="no-print flex flex-wrap items-center justify-between gap-4">
         <Wordmark href={flow === "angel" || !ACCOUNTS_ENABLED ? "/angel" : "/"} suffix={flow === "angel" ? "for angels" : undefined} />
-        <nav aria-label={flow === "angel" ? "Main" : "Account"} className="flex flex-wrap items-center gap-4 text-sm text-muted">
+        <nav aria-label={flow === "angel" ? "Main" : "Account"} className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[15px] text-muted">
           {flow === "angel" || !ACCOUNTS_ENABLED ? (
-            <Link href="/angel" className="text-ink">
+            <Link href="/angel" className="font-medium text-ink">
               Assess a deck
             </Link>
           ) : email ? (
@@ -27,7 +27,7 @@ export function Frame({
               </Link>
               <span className="hidden sm:inline">{email}</span>
               <form action="/auth/signout" method="post">
-                <button type="submit" className="text-ink">
+                <button type="submit" className="min-h-11 font-medium text-ink">
                   Sign out
                 </button>
               </form>
@@ -37,7 +37,7 @@ export function Frame({
               <Link href="/login" className="hover:text-ink">
                 Sign in
               </Link>
-              <Link href="/register" className="text-ink">
+              <Link href="/register" className="font-medium text-ink">
                 Register
               </Link>
             </>

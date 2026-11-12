@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { saveIntake, submitIntake, type Flow } from "@/lib/actions";
-import { AlertCircleIcon, FileIcon, SparkleIcon, WarningIcon } from "@/components/icons";
+import { AlertCircleIcon, FileIcon, SparkleIcon } from "@/components/icons";
 import { PILLARS } from "@/lib/pillars";
 import {
   fieldPath,
@@ -119,10 +119,10 @@ export function IntakeForm({
       {extractionNote ? (
         <p
           className="mt-6 flex items-start gap-2.5 rounded-xl border border-warn/25 bg-warn-tint/60 px-3.5 py-3 text-sm text-warn"
-          role="alert"
+          role="status"
         >
           <span className="mt-0.5 shrink-0">
-            <WarningIcon />
+            <AlertCircleIcon />
           </span>
           {extractionNote}
         </p>
