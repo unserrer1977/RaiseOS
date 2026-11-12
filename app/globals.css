@@ -5,10 +5,14 @@
   --ink: #1a1714;
   --muted: #6e675e;
   --line: #e3dcd0;
+  --line-strong: #cfc5b4;
   --card: #fbf9f5;
   --accent: #0e6b52;
+  --accent-tint: #e6f0eb;
   --danger: #8d2f2f;
+  --danger-tint: #f4e4e1;
   --warn: #8a4f12;
+  --warn-tint: #f6ebdd;
 }
 
 @theme inline {
@@ -16,10 +20,14 @@
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-card: var(--card);
   --color-accent: var(--accent);
+  --color-accent-tint: var(--accent-tint);
   --color-danger: var(--danger);
+  --color-danger-tint: var(--danger-tint);
   --color-warn: var(--warn);
+  --color-warn-tint: var(--warn-tint);
   --font-sans: var(--font-outfit);
   --font-serif: var(--font-fraunces);
 }
@@ -28,6 +36,17 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-outfit), sans-serif;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #8f877c;
+}
+
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
 @media print {

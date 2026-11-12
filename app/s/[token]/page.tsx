@@ -15,10 +15,23 @@ export default async function SharedReportPage({
       {result.kind === "ok" ? (
         <ReportView report={result.report} />
       ) : result.kind === "unconfigured" ? (
-        <p>Sharing is not configured. Add the server secret key.</p>
+        <Unavailable message="Sharing is not configured. Add the server secret key." />
       ) : (
-        <p>This report is not available.</p>
+        <Unavailable
+          message="This report is not available."
+          detail="The link may be wrong, or the assessment is not finished yet."
+        />
       )}
     </Frame>
+  );
+}
+
+function Unavailable({ message, detail }: { message: string; detail?: string }) {
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="text-[13px] uppercase tracking-[0.16em] text-muted">Shared report</p>
+      <h1 className="font-serif text-4xl leading-tight">{message}</h1>
+      {detail ? <p className="text-muted">{detail}</p> : null}
+    </div>
   );
 }

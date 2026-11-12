@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { saveIntake, submitIntake } from "@/lib/actions";
+import { AlertCircleIcon, FileIcon, SparkleIcon, WarningIcon } from "@/components/icons";
 import { PILLARS } from "@/lib/pillars";
 import {
   fieldPath,
@@ -86,38 +87,66 @@ export function IntakeForm({
     }
   }
 
+  const underline =
+    "w-full border-0 border-b border-line-strong bg-transparent py-3 text-lg text-ink outline-none focus:border-accent";
+
   return (
     <div>
-      <div className="flex items-center justify-between text-sm text-muted">
+      <div className="flex items-center justify-between gap-4 text-sm text-muted">
         <span>
           {step + 1} of {PILLARS.length}
         </span>
-        <span>{mode === "model" ? "Model-assisted prefill" : "Rules prefill"}</span>
+        <span className="inline-flex items-center gap-1.5">
+          <SparkleIcon size={14} />
+          {mode === "model" ? "Model-assisted prefill" : "Rules prefill"}
+        </span>
       </div>
-      <div className="mt-3 h-1 bg-line">
+      <div
+        className="mt-3 h-1 rounded-full bg-line"
+        role="progressbar"
+        aria-label="Intake progress"
+        aria-valuemin={1}
+        aria-valuemax={PILLARS.length}
+        aria-valuenow={step + 1}
+      >
         <div
-          className="h-1 bg-accent"
+          className="h-1 rounded-full bg-accent transition-[width]"
           style={{ width: `${((step + 1) / PILLARS.length) * 100}%` }}
         />
       </div>
-      {extractionNote ? <p className="mt-6 text-sm text-warn">{extractionNote}</p> : null}
-      <p className="mt-8 text-sm uppercase tracking-[0.16em] text-muted">{pillar.kicker}</p>
-      <h1 className="mt-3 font-serif text-4xl text-ink">{pillar.title}</h1>
-      <div className="mt-8 space-y-6">
+      {extractionNote ? (
+        <p
+          className="mt-6 flex items-start gap-2.5 rounded-xl border border-warn/25 bg-warn-tint/60 px-3.5 py-3 text-sm text-warn"
+          role="alert"
+        >
+          <span className="mt-0.5 shrink-0">
+            <WarningIcon />
+          </span>
+          {extractionNote}
+        </p>
+      ) : null}
+      <p className="mt-10 text-[13px] uppercase tracking-[0.16em] text-muted">{pillar.kicker}</p>
+      <h1 className="mt-3 font-serif text-4xl leading-tight text-ink sm:text-[40px]">{pillar.title}</h1>
+      <div className="mt-8 flex flex-col gap-7">
         {pillar.fields.map((field) => {
           const path = fieldPath(pillar.id, field.key);
           const value = (intake[pillar.id] as unknown as Record<string, string>)[field.key] ?? "";
           return (
-            <label key={field.key} className="block">
-              <span className="flex items-center justify-between text-sm text-muted">
+            <label key={field.key} className="flex flex-col gap-0.5">
+              <span className="flex items-center justify-between gap-3 text-sm text-muted">
                 {field.label}
-                {sources[path] === "deck" ? <span className="text-accent">From deck</span> : null}
+                {sources[path] === "deck" ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-accent-tint px-2.5 py-0.5 text-xs text-accent">
+                    <FileIcon size={12} />
+                    From deck
+                  </span>
+                ) : null}
               </span>
               {field.kind === "select" ? (
                 <select
                   value={value}
                   onChange={(event) => update(pillar.id, field.key, event.target.value)}
-                  className="mt-2 w-full border-b border-line bg-transparent py-3 text-lg outline-none focus:border-accent"
+                  className={`${underline} min-h-12`}
                 >
                   {field.options?.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -131,14 +160,14 @@ export function IntakeForm({
                   rows={3}
                   placeholder={field.placeholder}
                   onChange={(event) => update(pillar.id, field.key, event.target.value)}
-                  className="mt-2 w-full resize-none border-b border-line bg-transparent py-3 text-lg outline-none focus:border-accent"
+                  className={`${underline} resize-none leading-normal`}
                 />
               ) : (
                 <input
                   value={value}
                   placeholder={field.placeholder}
                   onChange={(event) => update(pillar.id, field.key, event.target.value)}
-                  className="mt-2 w-full border-b border-line bg-transparent py-3 text-lg outline-none placeholder:text-muted/70 focus:border-accent"
+                  className={underline}
                 />
               )}
             </label>
@@ -146,14 +175,15 @@ export function IntakeForm({
         })}
       </div>
       {error ? (
-        <p className="mt-6 text-sm text-danger" role="alert">
+        <p className="mt-6 flex items-center gap-2 text-sm text-danger" role="alert">
+          <AlertCircleIcon size={16} />
           {error}
         </p>
       ) : null}
-      <div className="mt-10 flex items-center justify-between">
+      <div className="mt-12 flex items-center justify-between gap-4">
         <button
           type="button"
-          className="text-sm text-muted disabled:opacity-40"
+          className="min-h-11 px-1 text-[15px] text-muted disabled:opacity-40"
           disabled={step === 0 || pending}
           onClick={() => setStep((value) => value - 1)}
         >
@@ -163,11 +193,12 @@ export function IntakeForm({
           type="button"
           onClick={() => void continueStep()}
           disabled={pending}
-          className="rounded-full bg-ink px-6 py-3 text-sm text-paper disabled:opacity-60"
+          className="min-h-12 rounded-full bg-ink px-7 text-[15px] text-paper disabled:opacity-60"
         >
           {pending ? "Saving…" : step === PILLARS.length - 1 ? "Continue" : "Next"}
         </button>
       </div>
+      <p className="mt-4 text-right text-[13px] text-muted">Saved automatically at every step.</p>
     </div>
   );
 }
