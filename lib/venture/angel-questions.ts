@@ -54,7 +54,7 @@ export function buildFounderQuestions(intake: Intake, followUps: FollowUp[]): st
   } else if (ltv.amount < cac.amount * 3) {
     tailored.push({
       topic: "unit",
-      question: `LTV (${formatMoney(ltv.amount)}) is less than three times CAC (${formatMoney(cac.amount)}). What will improve that ratio, and by when?`,
+      question: `LTV (${formatMoney(ltv.amount, ltv.currency)}) is less than three times CAC (${formatMoney(cac.amount, cac.currency)}). What will improve that ratio, and by when?`,
     });
   }
   if (!traction.mrrOrGmv.trim()) {

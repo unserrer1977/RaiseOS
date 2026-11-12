@@ -82,11 +82,77 @@ function applyFallbacks(text: string, found: Map<string, string>) {
     if (match?.[1]) found.set(path, clean(match[1]));
   };
 
-  grab("problem.tam", /TAM[^$\n]{0,24}(\$[\d.,]+\s*(?:trillion|billion|million|thousand|[tmbk])?)/i);
+  grab(
+    "problem.tam",
+    new RegExp(`TAM[^$£€\\n]{0,24}(${MONEY})`, "i"),
+  );
   grab(
     "capTable.founderEquityPercent",
     /founder(?:s| team)? equity(?: split| ownership)?\s*(?:is|:)?\s*(\d+(?:\.\d+)?\s*%)/i,
   );
+
+  // Real decks are slides, not "Label: value" lines. These read the common
+  // slide phrasings so the form is not blank when the model cannot be reached.
+  grab(
+    "company.legalName",
+    /\b((?:[A-Z][\w&'-]*[ \t]+){1,4}(?:Ltd|Limited|Inc|LLC|LLP|PLC|GmbH|Corp)\b\.?)/,
+  );
+  grab(
+    "problem.tam",
+    new RegExp(`(${MONEY})[^\\n]{0,30}\\b(?:market|category|opportunity)\\b`, "i"),
+  );
+  grab(
+    "problem.tam",
+    new RegExp(`\\b(?:market|category|opportunity)\\b[^\\n$£€]{0,40}(${MONEY})`, "i"),
+  );
+  grab(
+    "gtm.priceOrAcv",
+    /([$£€]\s?\d[\d.,]*\s?k?\s*(?:per|a|an|\/)\s*(?:student|pupil|user|seat|member|customer|household|month|year|school|site|licen[cs]e)(?:\s*(?:per|a|\/)\s*(?:month|year))?)/i,
+  );
+  grab(
+    "capTable.valuationOrCap",
+    new RegExp(`(${MONEY}\\s*(?:pre-money|post-money|valuation|cap)\\b)`, "i"),
+  );
+  grab("capTable.notableInvestors", /^Backed by\s+(.+)$/im);
+  grab("capTable.stage", /\b(pre[-\s]?seed|series\s+a|seed)\b/i);
+
+  const team = readTeam(text);
+  if (team.length > 0) {
+    if (!found.has("company.teamSize")) found.set("company.teamSize", String(team.length));
+    if (!found.has("company.founderBackgrounds")) {
+      found.set("company.founderBackgrounds", clean(team.join(" ")).slice(0, 600));
+    }
+  }
+}
+
+const MONEY = "[$£€]\\s?\\d[\\d.,]*\\s?(?:trillion|billion|million|thousand|bn|tn|mn|[tmbk])?\\b";
+
+const ROLE_LINE =
+  /^(?:(?:co-?)?founder|ceo|cto|coo|cfo|cpo|cmo|chief \w+ officer|managing director)\b[\w\s,&/-]{0,50}$/i;
+const NAME_LINE = /^[A-Z][\w.'-]+(?:\s+[A-Z][\w.'-]+){1,3}$/;
+
+/** Team slides list a name, then a role, then a line or two of background. */
+function readTeam(text: string): string[] {
+  const lines = text.split(/\r?\n/).map((line) => line.trim());
+  const roles: number[] = [];
+  lines.forEach((line, index) => {
+    if (index > 0 && ROLE_LINE.test(line) && NAME_LINE.test(lines[index - 1])) roles.push(index);
+  });
+
+  return roles.map((roleIndex, position) => {
+    const next = roles[position + 1];
+    const bio: string[] = [];
+    // Background runs to the next person's name, or to the end of a sentence
+    // for the last person on the slide.
+    const stop = next ? next - 1 : Math.min(lines.length, roleIndex + 5);
+    for (let index = roleIndex + 1; index < stop; index += 1) {
+      if (!lines[index]) break;
+      bio.push(lines[index]);
+      if (!next && /[.!?]$/.test(lines[index])) break;
+    }
+    const about = bio.length > 0 ? `: ${bio.join(" ")}` : ".";
+    return `${lines[roleIndex - 1]} (${lines[roleIndex]})${about}`;
+  });
 }
 
 function writePath(intake: Intake, path: string, value: string) {
