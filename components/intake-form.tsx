@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { saveIntake, submitIntake, type Flow } from "@/lib/actions";
 import { AlertCircleIcon, FileIcon, SparkleIcon } from "@/components/icons";
 import { PILLARS } from "@/lib/pillars";
@@ -33,6 +33,9 @@ export function IntakeForm({
   const [mode, setMode] = useState(extractionMode);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
+  const [reading, setReading] = useState(extractionMode !== "model");
+  const [note, setNote] = useState(extractionNote);
+  const edited = useRef(new Set<string>());
   const pillar = PILLARS[step];
 
   useEffect(() => {
@@ -42,8 +45,9 @@ export function IntakeForm({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ intake: initialIntake }),
-      });
-      if (!response.ok || cancelled) return;
+      }).catch(() => null);
+      if (!cancelled) setReading(false);
+      if (!response?.ok || cancelled) return;
       const payload = (await response.json()) as {
         mode?: ExtractionMode;
         intake?: Intake;
@@ -51,10 +55,13 @@ export function IntakeForm({
       };
       if (payload.mode === "model") setMode("model");
       if (!payload.intake || !payload.filled?.length || cancelled) return;
-      setIntake((current) => mergeEmpty(current, payload.intake as Intake, payload.filled ?? []));
+      // Take the model's reading of the deck, except for fields typed since.
+      const filled = payload.filled.filter((path) => !edited.current.has(path));
+      setNote(null);
+      setIntake((current) => mergeFromDeck(current, payload.intake as Intake, filled));
       setSources((current) => {
         const next = { ...current };
-        for (const path of payload.filled ?? []) next[path] = "deck";
+        for (const path of filled) next[path] = "deck";
         return next;
       });
     })();
@@ -68,6 +75,7 @@ export function IntakeForm({
       ...current,
       [pillarId]: { ...current[pillarId], [key]: value },
     }));
+    edited.current.add(fieldPath(pillarId, key));
     setSources((current) => ({ ...current, [fieldPath(pillarId, key)]: "founder" }));
   }
 
@@ -100,7 +108,7 @@ export function IntakeForm({
         </span>
         <span className="inline-flex items-center gap-1.5">
           <SparkleIcon size={14} />
-          {mode === "model" ? "Model-assisted prefill" : "Rules prefill"}
+          {reading ? "Reading your deck…" : mode === "model" ? "Model-assisted prefill" : "Rules prefill"}
         </span>
       </div>
       <div
@@ -116,7 +124,7 @@ export function IntakeForm({
           style={{ width: `${((step + 1) / PILLARS.length) * 100}%` }}
         />
       </div>
-      {extractionNote ? (
+      {note && !reading ? (
         <p
           className="mt-6 flex items-start gap-2.5 rounded-xl border border-warn/25 bg-warn-tint/60 px-3.5 py-3 text-sm text-warn"
           role="status"
@@ -124,7 +132,7 @@ export function IntakeForm({
           <span className="mt-0.5 shrink-0">
             <AlertCircleIcon />
           </span>
-          {extractionNote}
+          {note}
         </p>
       ) : null}
       <p className="mt-10 text-[13px] uppercase tracking-[0.16em] text-muted">{pillar.kicker}</p>
@@ -213,12 +221,10 @@ export function IntakeForm({
   );
 }
 
-function mergeEmpty(current: Intake, incoming: Intake, filled: string[]): Intake {
+function mergeFromDeck(current: Intake, incoming: Intake, filled: string[]): Intake {
   const next = structuredClone(current);
   for (const path of filled) {
     const [pillar, key] = path.split(".") as [keyof Intake, string];
-    const local = (next[pillar] as unknown as Record<string, string>)[key];
-    if (typeof local === "string" && local.trim()) continue;
     const value = (incoming[pillar] as unknown as Record<string, string>)[key];
     if (typeof value === "string") {
       (next[pillar] as unknown as Record<string, string>)[key] = value;
