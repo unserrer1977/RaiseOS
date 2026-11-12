@@ -87,8 +87,6 @@ function applyFallbacks(text: string, found: Map<string, string>) {
     "capTable.founderEquityPercent",
     /founder(?:s| team)? equity(?: split| ownership)?\s*(?:is|:)?\s*(\d+(?:\.\d+)?\s*%)/i,
   );
-  grab("gtm.priceOrAcv", /(\$[\d.,]+\s*(?:k|m)?\s*(?:\/|\bper\s+)(?:mo|month)|\bACV\b[^$\n]{0,16}(\$[\d.,]+\s*[kmb]?))/i);
-  grab("company.teamSize", /(\d+)\s*(?:person|people|employees)\b/i);
 }
 
 function writePath(intake: Intake, path: string, value: string) {
