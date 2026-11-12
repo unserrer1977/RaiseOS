@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { saveIntake, submitIntake } from "@/lib/actions";
+import { saveIntake, submitIntake, type Flow } from "@/lib/actions";
 import { AlertCircleIcon, FileIcon, SparkleIcon, WarningIcon } from "@/components/icons";
 import { PILLARS } from "@/lib/pillars";
 import {
@@ -18,8 +18,10 @@ export function IntakeForm({
   initialSources,
   extractionMode,
   extractionNote,
+  flow = "founder",
 }: {
   id: string;
+  flow?: Flow;
   initialIntake: Intake;
   initialSources: Record<string, FieldSource>;
   extractionMode: ExtractionMode;
@@ -74,7 +76,7 @@ export function IntakeForm({
     setError("");
     const last = step === PILLARS.length - 1;
     const result = last
-      ? await submitIntake(id, intake, sources)
+      ? await submitIntake(id, intake, sources, flow)
       : await saveIntake(id, intake, sources);
     if (result && "error" in result && result.error) {
       setError(result.error);
@@ -126,7 +128,15 @@ export function IntakeForm({
         </p>
       ) : null}
       <p className="mt-10 text-[13px] uppercase tracking-[0.16em] text-muted">{pillar.kicker}</p>
-      <h1 className="mt-3 font-serif text-4xl leading-tight text-ink sm:text-[40px]">{pillar.title}</h1>
+      <h1 className="mt-3 font-serif text-4xl leading-tight text-ink sm:text-[40px]">
+        {flow === "angel" ? (pillar.angelTitle ?? pillar.title) : pillar.title}
+      </h1>
+      {flow === "angel" && step === 0 ? (
+        <p className="mt-4 max-w-xl text-muted">
+          We filled in what the deck says. Check it, and add anything the founder has told you. Leave a
+          field blank if you don’t know: a gap is a finding too.
+        </p>
+      ) : null}
       <div className="mt-8 flex flex-col gap-7">
         {pillar.fields.map((field) => {
           const path = fieldPath(pillar.id, field.key);

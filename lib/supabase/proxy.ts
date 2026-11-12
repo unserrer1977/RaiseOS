@@ -31,12 +31,16 @@ export async function updateSession(request: NextRequest) {
   );
 
   const { data } = await supabase.auth.getClaims();
-  const signedIn = Boolean(data?.claims?.sub);
+  const hasSession = Boolean(data?.claims?.sub);
+  // Guest sessions from the public /angel flow do not count as signed in for founder pages.
+  const signedIn = hasSession && data?.claims?.is_anonymous !== true;
   const path = request.nextUrl.pathname;
-  const protectedPath =
-    path.startsWith("/home") || path.startsWith("/a/") || path.startsWith("/api/ingest") || path.startsWith("/api/assessments");
+  const founderPath =
+    path.startsWith("/home") || path.startsWith("/a/") || path.startsWith("/api/ingest");
+  // Shared by founders and angel guests: any session will do.
+  const sessionPath = path.startsWith("/api/assessments");
 
-  if (!signedIn && protectedPath) {
+  if ((!signedIn && founderPath) || (!hasSession && sessionPath)) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("next", path);

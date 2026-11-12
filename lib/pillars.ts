@@ -12,6 +12,8 @@ export interface PillarDef {
   id: PillarId;
   kicker: string;
   title: string;
+  /** Title shown in the angel flow, where the reader is assessing someone else's company. */
+  angelTitle?: string;
   fields: FieldDef[];
 }
 
@@ -37,6 +39,7 @@ export const PILLARS: PillarDef[] = [
     id: "problem",
     kicker: "Problem and solution",
     title: "What hurts, and what do you sell?",
+    angelTitle: "What hurts, and what do they sell?",
     fields: [
       { key: "pain", label: "Pain", placeholder: "The specific cost of the status quo", kind: "textarea" },
       { key: "customerProfile", label: "Target customer", placeholder: "Who pays" },
@@ -51,6 +54,7 @@ export const PILLARS: PillarDef[] = [
     id: "gtm",
     kicker: "Go-to-market",
     title: "How does a dollar get in?",
+    angelTitle: "How will they win customers?",
     fields: [
       {
         key: "customerType",
@@ -70,6 +74,7 @@ export const PILLARS: PillarDef[] = [
     id: "traction",
     kicker: "Traction",
     title: "What is already true?",
+    angelTitle: "What have they proven so far?",
     fields: [
       { key: "mrrOrGmv", label: "MRR or GMV", placeholder: "$12,000 MRR" },
       { key: "momGrowth", label: "MoM growth", placeholder: "18%" },
@@ -81,6 +86,7 @@ export const PILLARS: PillarDef[] = [
     id: "capTable",
     kicker: "Cap table",
     title: "Who owns the company?",
+    angelTitle: "Who owns it, and on what terms?",
     fields: [
       { key: "amountRaised", label: "Total raised", placeholder: "$1.5M" },
       {

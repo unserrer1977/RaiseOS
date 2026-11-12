@@ -4,7 +4,23 @@ import Link from "next/link";
 import { useState } from "react";
 import { DownloadIcon, FlagIcon, LinkIcon } from "@/components/icons";
 import { VERDICT_STYLE, VerdictIcon } from "@/components/verdict";
-import type { Report } from "@/lib/types";
+import type { Report, Verdict } from "@/lib/types";
+
+/** Plain-English reading of each verdict for an angel deciding whether to invest. */
+const ANGEL_READING: Record<Verdict, { title: string; body: string }> = {
+  highly_fundable: {
+    title: "Worth a closer look",
+    body: "The shape fits a venture-style return: big enough market, a credible way to sell, and founders who still own enough to stay motivated. What’s left is your own diligence on the people, the references and the terms.",
+  },
+  borderline: {
+    title: "Proceed with care",
+    body: "One gap stands between this and a venture-style return. Put it to the founder before you commit, and make sure the price reflects the risk if the answer is thin.",
+  },
+  bootstrap: {
+    title: "Probably not a venture bet",
+    body: "This may be a good business, but as it stands it is unlikely to return an angel cheque many times over. If you invest, do it because you back the founder, and on terms that suit a slower, smaller outcome.",
+  },
+};
 
 const WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six"];
 
@@ -18,8 +34,10 @@ export function ReportView({
   report,
   shareUrl,
   dateLabel,
+  flow = "founder",
 }: {
   report: Report;
+  flow?: "founder" | "angel";
   shareUrl?: string;
   dateLabel?: string;
 }) {
@@ -36,7 +54,9 @@ export function ReportView({
   return (
     <article className="flex flex-col gap-10">
       <div className="no-print flex flex-wrap items-center justify-between gap-4">
-        <p className="text-[13px] uppercase tracking-[0.16em] text-muted">Venture scalability report</p>
+        <p className="text-[13px] uppercase tracking-[0.16em] text-muted">
+          {flow === "angel" ? "Angel opportunity report" : "Venture scalability report"}
+        </p>
         <div className="flex flex-wrap gap-2">
           {shareUrl ? (
             <button
@@ -79,6 +99,21 @@ export function ReportView({
         </p>
       </div>
 
+      {flow === "angel" ? (
+        <section className={`flex flex-col gap-2 rounded-2xl border p-6 ${style.border} ${style.tint}`}>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-muted">What this means for you</p>
+          <h2 className={`font-serif text-[28px] leading-tight ${style.text}`}>
+            {ANGEL_READING[report.verdict]?.title}
+          </h2>
+          <p className="max-w-2xl leading-relaxed text-ink">{ANGEL_READING[report.verdict]?.body}</p>
+          {report.redFlags.length > 0 && report.verdict !== "highly_fundable" ? (
+            <p className="max-w-2xl text-[15px] text-muted">
+              The red flags below are the questions to put to the founder first.
+            </p>
+          ) : null}
+        </section>
+      ) : null}
+
       <section className="flex flex-col gap-3 border-t border-line pt-8">
         <h2 className="font-serif text-[28px]">Venture scale</h2>
         <p className="max-w-2xl leading-relaxed text-ink">{report.ventureScale}</p>
@@ -99,7 +134,20 @@ export function ReportView({
         </div>
       </section>
 
-      {owner ? (
+      {owner && flow === "angel" ? (
+        <div className="no-print flex flex-col gap-4 border-t border-line pt-6">
+          <p className="text-sm text-muted">
+            This is a structured read of the deck, not investment advice. Do your own diligence before you
+            invest.
+          </p>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <p className="text-[15px] text-muted">Looking at another deal?</p>
+            <Link href="/angel" className="text-[15px] text-ink underline underline-offset-4">
+              Assess another deck
+            </Link>
+          </div>
+        </div>
+      ) : owner ? (
         <div className="no-print flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6">
           <p className="text-[15px] text-muted">Fixed something in the deck? Run a new assessment.</p>
           <Link href="/home" className="text-[15px] text-ink underline underline-offset-4">
