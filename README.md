@@ -1,6 +1,6 @@
-# RaiseOS
+# Raise Insight by Angel OS
 
-RaiseOS turns a pitch deck into a five-pillar intake, at most four venture follow-ups, and a fundability report. Founders sign in with email and password or Google. Assessments and decks live in your Supabase project.
+Raise Insight turns a pitch deck into a five-pillar intake, at most four venture follow-ups, and a fundability report. Founders sign in with email and password or Google. Assessments and decks live in your Supabase project.
 
 ## Setup
 
@@ -47,4 +47,4 @@ Auth settings live on the `Gotrue Auth` service: `GOTRUE_SITE_URL` and `GOTRUE_U
 
 ## Product design
 
-- **[UI specification (designer handoff)](docs/UI_SPEC.md)** — scope, IA, screen inventory, design-system guidance, and accessibility targets for RaiseOS.
+- **[UI specification (designer handoff)](docs/UI_SPEC.md)** — scope, IA, screen inventory, design-system guidance, and accessibility targets for Raise Insight.

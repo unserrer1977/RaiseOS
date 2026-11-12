@@ -29,8 +29,8 @@ export default async function SharedReportPage({
 function Unavailable({ message, detail }: { message: string; detail?: string }) {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-[13px] uppercase tracking-[0.16em] text-muted">Shared report</p>
-      <h1 className="font-serif text-4xl leading-tight">{message}</h1>
+      <p className="font-mono text-xs uppercase tracking-[0.08em] text-muted">Shared report</p>
+      <h1 className="text-3xl font-semibold tracking-[-0.02em] leading-tight">{message}</h1>
       {detail ? <p className="text-muted">{detail}</p> : null}
     </div>
   );

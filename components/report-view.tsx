@@ -59,7 +59,7 @@ export function ReportView({
   return (
     <article className="flex flex-col gap-10">
       <div className="no-print flex flex-wrap items-center justify-between gap-4">
-        <p className="text-[13px] uppercase tracking-[0.16em] text-muted">
+        <p className="font-mono text-xs uppercase tracking-[0.08em] text-muted">
           {flow === "angel" ? "Angel opportunity report" : "Venture scalability report"}
         </p>
         <div className="flex flex-wrap gap-2">
@@ -67,7 +67,7 @@ export function ReportView({
             <button
               type="button"
               onClick={() => void copyLink()}
-              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong px-4 text-sm"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md font-medium border border-line-strong px-4 text-sm"
             >
               <LinkIcon size={16} />
               <span aria-live="polite">{copied ? "Link copied" : "Copy share link"}</span>
@@ -76,7 +76,7 @@ export function ReportView({
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-4 text-sm text-paper"
+            className="inline-flex min-h-11 items-center gap-2 rounded-md font-medium bg-ink px-4 text-sm text-white"
           >
             <DownloadIcon size={16} />
             Download PDF
@@ -90,24 +90,24 @@ export function ReportView({
           {dateLabel ? ` · ${dateLabel}` : ""}
         </p>
         <p
-          className={`inline-flex items-center gap-2 self-start rounded-full px-3.5 py-1.5 text-[13px] font-semibold tracking-[0.04em] ${style.tint} ${style.text}`}
+          className={`inline-flex items-center gap-2 self-start rounded-full px-3 py-1 text-[13px] font-medium ${style.tint} ${style.text}`}
         >
           <VerdictIcon verdict={report.verdict} size={16} />
           {kickerFor(report)}
         </p>
-        <h1 className="font-serif text-5xl leading-[1.05] tracking-[-0.01em] text-ink sm:text-[56px]">
+        <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.02em] text-ink sm:text-5xl">
           {report.verdictLabel}
         </h1>
         <p className="mt-2 max-w-2xl text-lg leading-relaxed sm:text-[19px]">{report.rationale}</p>
-        <p className="text-xs uppercase tracking-[0.14em] text-muted">
+        <p className="font-mono text-xs uppercase tracking-[0.08em] text-muted">
           {report.narrativeSource === "model" ? "Narrative phrased by the model" : "Narrative from the rules"}
         </p>
       </div>
 
       {flow === "angel" ? (
-        <section className={`flex flex-col gap-2 rounded-2xl border p-6 ${style.border} ${style.tint}`}>
-          <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-muted">What this means for you</p>
-          <h2 className={`font-serif text-[28px] leading-tight ${style.text}`}>
+        <section className={`flex flex-col gap-2 rounded-lg border p-6 ${style.border} ${style.tint}`}>
+          <p className="font-mono text-xs font-medium uppercase tracking-[0.08em] text-muted">What this means for you</p>
+          <h2 className={`text-xl font-semibold leading-tight ${style.text}`}>
             {ANGEL_READING[report.verdict]?.title}
           </h2>
           <p className="max-w-2xl leading-relaxed text-ink">{ANGEL_READING[report.verdict]?.body}</p>
@@ -120,7 +120,7 @@ export function ReportView({
       ) : null}
 
       <section className="flex flex-col gap-3 border-t border-line pt-8">
-        <h2 className="font-serif text-[28px]">Venture scale</h2>
+        <h2 className="text-xl font-semibold">Venture scale</h2>
         <p className="max-w-2xl leading-relaxed text-ink">{report.ventureScale}</p>
       </section>
 
@@ -134,7 +134,7 @@ export function ReportView({
       ) : null}
 
       <section className="flex flex-col gap-5">
-        <h2 className="font-serif text-[28px]">SWOT</h2>
+        <h2 className="text-xl font-semibold">SWOT</h2>
         <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
           <Swot title="Strengths" items={report.swot.strengths} />
           <Swot title="Weaknesses" items={report.swot.weaknesses} />
@@ -164,21 +164,21 @@ export function ReportView({
           </Link>
         </div>
       ) : ACCOUNTS_ENABLED ? (
-        <div className="no-print flex flex-wrap items-center justify-between gap-5 rounded-[20px] bg-ink p-8 text-paper">
-          <p className="max-w-md font-serif text-[26px] leading-tight">Get a read on your own company.</p>
+        <div className="no-print flex flex-wrap items-center justify-between gap-5 rounded-lg bg-ink p-8 text-white">
+          <p className="max-w-md text-xl font-semibold leading-tight">Get a read on your own company.</p>
           <Link
             href="/register"
-            className="inline-flex min-h-12 items-center rounded-full bg-paper px-6 text-[15px] text-ink"
+            className="inline-flex min-h-12 items-center rounded-md bg-accent px-6 text-[15px] font-medium text-ink"
           >
             Register
           </Link>
         </div>
       ) : (
-        <div className="no-print flex flex-wrap items-center justify-between gap-5 rounded-[20px] bg-ink p-8 text-paper">
-          <p className="max-w-md font-serif text-[26px] leading-tight">Get a read on another deck.</p>
+        <div className="no-print flex flex-wrap items-center justify-between gap-5 rounded-lg bg-ink p-8 text-white">
+          <p className="max-w-md text-xl font-semibold leading-tight">Get a read on another deck.</p>
           <Link
             href="/angel"
-            className="inline-flex min-h-12 items-center rounded-full bg-paper px-6 text-[15px] text-ink"
+            className="inline-flex min-h-12 items-center rounded-md bg-accent px-6 text-[15px] font-medium text-ink"
           >
             Assess a deck
           </Link>
@@ -204,7 +204,7 @@ function FounderQuestions({ companyName, questions }: { companyName: string; que
     <section className="flex flex-col gap-5 border-t border-line pt-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex max-w-xl flex-col gap-2">
-          <h2 className="font-serif text-[28px]">{questions.length} questions to ask the founders</h2>
+          <h2 className="text-xl font-semibold">{questions.length} questions to ask the founders</h2>
           <p className="text-[15px] text-muted">
             The first ones come from the gaps in this deck. Take them into your next call or send them ahead.
           </p>
@@ -212,7 +212,7 @@ function FounderQuestions({ companyName, questions }: { companyName: string; que
         <button
           type="button"
           onClick={() => void copy()}
-          className="no-print inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-5 text-sm text-paper"
+          className="no-print inline-flex min-h-11 items-center gap-2 rounded-md font-medium bg-ink px-5 text-sm text-white"
         >
           <CopyIcon size={16} />
           <span aria-live="polite">
@@ -223,7 +223,7 @@ function FounderQuestions({ companyName, questions }: { companyName: string; que
       <ol className="flex flex-col border-t border-line">
         {questions.map((question, index) => (
           <li key={question} className="flex gap-4 border-b border-line py-4">
-            <span aria-hidden="true" className="w-7 shrink-0 font-serif text-xl text-accent">
+            <span aria-hidden="true" className="w-7 shrink-0 font-mono text-sm text-muted">
               {String(index + 1).padStart(2, "0")}
             </span>
             <span className="text-[17px] leading-relaxed text-ink">{question}</span>
@@ -244,9 +244,9 @@ function FlagList({
   tone: "good" | "bad";
 }) {
   return (
-    <section className="flex flex-col gap-3 rounded-2xl border border-line bg-card p-6">
+    <section className="flex flex-col gap-3 rounded-lg border border-line bg-card shadow-sm p-6">
       <h2
-        className={`flex items-center gap-2 font-semibold ${tone === "good" ? "text-accent" : "text-danger"}`}
+        className={`flex items-center gap-2 font-semibold ${tone === "good" ? "text-success" : "text-danger"}`}
       >
         <FlagIcon />
         {title}
@@ -263,7 +263,7 @@ function FlagList({
 function Swot({ title, items }: { title: string; items: string[] }) {
   return (
     <section className="flex flex-col gap-2 border-t border-ink pt-3.5">
-      <h3 className="text-[13px] font-semibold uppercase tracking-[0.14em] text-muted">{title}</h3>
+      <h3 className="font-mono text-xs font-medium uppercase tracking-[0.08em] text-muted">{title}</h3>
       <ul className="flex list-disc flex-col gap-1.5 pl-[18px] text-[15px] leading-relaxed">
         {items.map((item) => (
           <li key={item}>{item}</li>

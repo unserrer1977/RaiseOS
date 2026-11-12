@@ -28,8 +28,8 @@ export function Uploader() {
   return (
     <div>
       <label
-        className={`flex min-h-56 cursor-pointer flex-col items-center justify-center gap-3 rounded-[20px] border-[1.5px] border-dashed px-6 py-10 text-center transition-colors focus-within:outline-2 focus-within:outline-offset-4 focus-within:outline-accent ${
-          dragging ? "border-accent bg-accent-tint" : "border-line-strong bg-card"
+        className={`flex min-h-56 cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-[1.5px] border-dashed px-6 py-10 text-center transition-colors focus-within:outline-2 focus-within:outline-offset-4 focus-within:outline-accent ${
+          dragging ? "border-accent bg-accent-soft" : "border-line-strong bg-card"
         }`}
         onDragOver={(event) => {
           event.preventDefault();
@@ -43,10 +43,10 @@ export function Uploader() {
           if (file && !pending) void send(file);
         }}
       >
-        <span className="text-accent">
+        <span className="text-ink">
           <UploadFileIcon size={36} />
         </span>
-        <span className="font-serif text-3xl leading-tight text-ink">
+        <span className="text-xl font-semibold leading-tight text-ink">
           {dragging ? "Release to upload" : "Drop the deck"}
         </span>
         <span className="max-w-sm text-sm text-muted">
@@ -63,7 +63,7 @@ export function Uploader() {
             if (file) void send(file);
           }}
         />
-        <span className="mt-3 inline-flex min-h-11 items-center rounded-full bg-ink px-5 text-sm text-paper">
+        <span className="mt-3 inline-flex min-h-11 items-center rounded-md font-medium bg-ink px-5 text-sm text-white">
           {pending ? "Reading the deck…" : "Choose a file"}
         </span>
       </label>

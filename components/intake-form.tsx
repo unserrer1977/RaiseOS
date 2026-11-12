@@ -100,7 +100,7 @@ export function IntakeForm({
   }
 
   const underline =
-    "w-full border-0 border-b border-line-strong bg-transparent py-3 text-lg text-ink outline-none focus:border-accent";
+    "w-full py-2.5 rounded-md border border-line-strong bg-card px-3 text-base text-ink shadow-sm outline-none focus:border-ink focus:ring-2 focus:ring-accent/50";
 
   return (
     <div>
@@ -128,7 +128,7 @@ export function IntakeForm({
       </div>
       {note && !reading ? (
         <p
-          className="mt-6 flex items-start gap-2.5 rounded-xl border border-warn/25 bg-warn-tint/60 px-3.5 py-3 text-sm text-warn"
+          className="mt-6 flex items-start gap-2.5 rounded-md border border-warn/25 bg-warn-tint/60 px-3.5 py-3 text-sm text-warn"
           role="status"
         >
           <span className="mt-0.5 shrink-0">
@@ -137,8 +137,8 @@ export function IntakeForm({
           {note}
         </p>
       ) : null}
-      <p className="mt-10 text-[13px] uppercase tracking-[0.16em] text-muted">{pillar.kicker}</p>
-      <h1 className="mt-3 font-serif text-4xl leading-tight text-ink sm:text-[40px]">
+      <p className="mt-10 font-mono text-xs uppercase tracking-[0.08em] text-muted">{pillar.kicker}</p>
+      <h1 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.02em] text-ink sm:text-4xl">
         {flow === "angel" ? (pillar.angelTitle ?? pillar.title) : pillar.title}
       </h1>
       {flow === "angel" && step === 0 ? (
@@ -152,11 +152,11 @@ export function IntakeForm({
           const path = fieldPath(pillar.id, field.key);
           const value = (intake[pillar.id] as unknown as Record<string, string>)[field.key] ?? "";
           return (
-            <label key={field.key} className="flex flex-col gap-0.5">
+            <label key={field.key} className="flex flex-col gap-1.5">
               <span className="flex items-center justify-between gap-3 text-sm text-muted">
                 {field.label}
                 {sources[path] === "deck" ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-accent-tint px-2.5 py-0.5 text-xs text-accent">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-medium text-accent-ink">
                     <FileIcon size={12} />
                     From deck
                   </span>
@@ -166,7 +166,7 @@ export function IntakeForm({
                 <select
                   value={value}
                   onChange={(event) => update(pillar.id, field.key, event.target.value)}
-                  className={`${underline} min-h-12`}
+                  className={`${underline} h-11`}
                 >
                   {field.options?.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -213,7 +213,7 @@ export function IntakeForm({
           type="button"
           onClick={() => void continueStep()}
           disabled={pending}
-          className="min-h-12 rounded-full bg-ink px-7 text-[15px] text-paper disabled:opacity-60"
+          className="min-h-12 rounded-md font-medium bg-ink px-7 text-[15px] text-white disabled:opacity-60"
         >
           {pending ? "Saving…" : step === PILLARS.length - 1 ? "Continue" : "Next"}
         </button>
