@@ -6,7 +6,7 @@ vi.mock("@openrouter/ai-sdk-provider", () => ({
   })),
 }));
 
-import { chatModel, DECK_MODEL, modelConfigured } from "@/lib/ai/openrouter";
+import { chatModel, DEFAULT_MODEL, modelConfigured, resolvedModelId } from "@/lib/ai/openrouter";
 
 describe("openrouter", () => {
   afterEach(() => {
@@ -21,6 +21,9 @@ describe("openrouter", () => {
 
   it("returns a chat model handle", () => {
     process.env.OPENROUTER_API_KEY = "sk-test";
-    expect(chatModel(DECK_MODEL)).toMatchObject({ modelId: DECK_MODEL });
+    expect(resolvedModelId()).toBe(DEFAULT_MODEL);
+    expect(chatModel()).toMatchObject({ modelId: DEFAULT_MODEL });
+    process.env.OPENROUTER_MODEL = "anthropic/claude-3.5-sonnet";
+    expect(resolvedModelId()).toBe("anthropic/claude-3.5-sonnet");
   });
 });

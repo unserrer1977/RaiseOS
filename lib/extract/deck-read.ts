@@ -5,7 +5,7 @@
  */
 
 import { generateText } from "ai";
-import { chatModel, DECK_MODEL, modelConfigured } from "@/lib/ai/openrouter";
+import { chatModel, modelConfigured } from "@/lib/ai/openrouter";
 import { extractPdfPageTexts } from "@/lib/extract/pdf";
 import { extractPptxPages } from "@/lib/extract/pptx";
 
@@ -79,7 +79,7 @@ async function ocrPdfPages(pdfBytes: Uint8Array, pageNumbers: number[]): Promise
       const partBytes = await doc.save();
 
       const { text: reply } = await generateText({
-        model: chatModel(DECK_MODEL),
+        model: chatModel(),
         timeout: 60_000,
         messages: [
           {

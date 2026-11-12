@@ -7,6 +7,9 @@ import { coerceIntake, type FieldSource } from "@/lib/types";
 
 export const runtime = "nodejs";
 
+const MODEL_FAILED_NOTE =
+  "The AI reader could not be reached, so only a few basics were picked up from this deck. Check every field against the deck, or upload it again later.";
+
 export async function POST(
   request: Request,
   context: { params: Promise<{ id: string }> },
@@ -46,6 +49,7 @@ export async function POST(
       console.error("refine: deck download failed", downloadError);
     } else {
       pdf = new Uint8Array(await file.arrayBuffer());
+      if (pdf.length === 0) console.error("refine: stored deck came back empty", row.deck_path);
     }
   }
 
@@ -56,7 +60,18 @@ export async function POST(
   );
   const enriched = await enrichIntake(row.deck_text ?? "", current, { pdf, locked });
   if (!enriched) {
-    return NextResponse.json({ mode: row.extraction_mode, intake: current, filled: [] });
+    // Say so when the model was meant to read the deck and could not, rather
+    // than leaving a half-empty form that looks like a finished reading.
+    const note = modelConfigured() ? MODEL_FAILED_NOTE : row.extraction_note;
+    if (note && note !== row.extraction_note) {
+      await supabase
+        .from("assessments")
+        .update({ extraction_note: note })
+        .eq("id", id)
+        .eq("user_id", user.id)
+        .eq("status", "intake");
+    }
+    return NextResponse.json({ mode: row.extraction_mode, intake: current, filled: [], note });
   }
 
   // The model can take a while. Re-read the row so anything typed and saved

@@ -10,8 +10,7 @@ const THIN_TEXT = 80;
 
 const LINE_RULES: { path: string; pattern: RegExp }[] = [
   { path: "company.legalName", pattern: /^(?:legal name|company name)\s*[:\-]\s*(.+)$/i },
-  { path: "company.foundingDate", pattern: /^(?:founded|founding date|incorporated)\s*[:\-]\s*(.+)$/i },
-  { path: "company.headquarters", pattern: /^(?:headquarters|hq|based in)\s*[:\-]\s*(.+)$/i },
+  { path: "company.country", pattern: /^country\s*[:\-]\s*(.+)$/i },
   { path: "company.teamSize", pattern: /^(?:team size|headcount|employees)\s*[:\-]\s*(.+)$/i },
   { path: "company.founderBackgrounds", pattern: /^(?:founders?|founder backgrounds?)\s*[:\-]\s*(.+)$/i },
   { path: "problem.pain", pattern: /^(?:problem|pain(?: point)?)\s*[:\-]\s*(.+)$/i },
@@ -82,11 +81,111 @@ function applyFallbacks(text: string, found: Map<string, string>) {
     if (match?.[1]) found.set(path, clean(match[1]));
   };
 
-  grab("problem.tam", /TAM[^$\n]{0,24}(\$[\d.,]+\s*(?:trillion|billion|million|thousand|[tmbk])?)/i);
+  grab(
+    "problem.tam",
+    new RegExp(`TAM[^$£€\\n]{0,24}(${MONEY})`, "i"),
+  );
   grab(
     "capTable.founderEquityPercent",
     /founder(?:s| team)? equity(?: split| ownership)?\s*(?:is|:)?\s*(\d+(?:\.\d+)?\s*%)/i,
   );
+
+  // Real decks are slides, not "Label: value" lines. These read the common
+  // slide phrasings so the form is not blank when the model cannot be reached.
+  grab(
+    "company.legalName",
+    /\b((?:[A-Z][\w&'-]*[ \t]+){1,4}(?:Ltd|Limited|Inc|LLC|LLP|PLC|GmbH|Corp)\b\.?)/,
+  );
+  grab(
+    "problem.tam",
+    new RegExp(`(${MONEY})[^\\n]{0,30}\\b(?:market|category|opportunity)\\b`, "i"),
+  );
+  grab(
+    "problem.tam",
+    new RegExp(`\\b(?:market|category|opportunity)\\b[^\\n$£€]{0,40}(${MONEY})`, "i"),
+  );
+  grab(
+    "gtm.priceOrAcv",
+    /([$£€]\s?\d[\d.,]*\s?k?\s*(?:per|a|an|\/)\s*(?:student|pupil|user|seat|member|customer|household|month|year|school|site|licen[cs]e)(?:\s*(?:per|a|\/)\s*(?:month|year))?)/i,
+  );
+  grab(
+    "capTable.valuationOrCap",
+    new RegExp(`(${MONEY}\\s*(?:pre-money|post-money|valuation|cap)\\b)`, "i"),
+  );
+  grab("capTable.notableInvestors", /^Backed by\s+(.+)$/im);
+  grab("capTable.stage", /\b(pre[-\s]?seed|series\s+a|seed)\b/i);
+
+  // Country only when the deck says where the company is, or names a scheme
+  // that only companies in one country can use.
+  if (!found.has("company.country")) {
+    const stated = text.match(
+      new RegExp(
+        `\\b(?:based|headquartered|registered|incorporated)\\s+in\\s+(?:[\\w.' -]{2,30},\\s*)?(?:the\\s+)?(${Object.keys(COUNTRIES).join("|")})\\b`,
+        "i",
+      ),
+    );
+    if (stated) found.set("company.country", COUNTRIES[stated[1].toLowerCase()]);
+    else if (/\bS?EIS\b/.test(text)) found.set("company.country", "United Kingdom");
+  }
+
+  // Named founders are not a headcount, so team size is left for the
+  // founders to answer.
+  const team = readTeam(text);
+  if (team.length > 0 && !found.has("company.founderBackgrounds")) {
+    found.set("company.founderBackgrounds", clean(team.join(" ")).slice(0, 600));
+  }
+}
+
+const COUNTRIES: Record<string, string> = {
+  "united kingdom": "United Kingdom",
+  uk: "United Kingdom",
+  england: "United Kingdom",
+  scotland: "United Kingdom",
+  wales: "United Kingdom",
+  "northern ireland": "United Kingdom",
+  "united states": "United States",
+  usa: "United States",
+  ireland: "Ireland",
+  france: "France",
+  germany: "Germany",
+  spain: "Spain",
+  italy: "Italy",
+  netherlands: "Netherlands",
+  sweden: "Sweden",
+  canada: "Canada",
+  australia: "Australia",
+  india: "India",
+  singapore: "Singapore",
+};
+
+const MONEY = "[$£€]\\s?\\d[\\d.,]*\\s?(?:trillion|billion|million|thousand|bn|tn|mn|[tmbk])?\\b";
+
+const ROLE_LINE =
+  /^(?:(?:co-?)?founder|ceo|cto|coo|cfo|cpo|cmo|chief \w+ officer|managing director)\b[\w\s,&/-]{0,50}$/i;
+const NAME_LINE = /^[A-Z][\w.'-]+(?:\s+[A-Z][\w.'-]+){1,3}$/;
+
+/** Team slides list a name, then a role, then a line or two of background. */
+function readTeam(text: string): string[] {
+  const lines = text.split(/\r?\n/).map((line) => line.trim());
+  const roles: number[] = [];
+  lines.forEach((line, index) => {
+    if (index > 0 && ROLE_LINE.test(line) && NAME_LINE.test(lines[index - 1])) roles.push(index);
+  });
+
+  return roles.map((roleIndex, position) => {
+    const next = roles[position + 1];
+    const bio: string[] = [];
+    // Background runs to the next person's name, or to the end of a sentence
+    // for the last person on the slide.
+    const stop = next ? next - 1 : Math.min(lines.length, roleIndex + 5);
+    for (let index = roleIndex + 1; index < stop; index += 1) {
+      if (!lines[index]) break;
+      bio.push(lines[index]);
+      if (!next && /[.!?]$/.test(lines[index])) break;
+    }
+    const about = bio.length > 0 ? `: ${bio.join(" ")}` : ".";
+    return `${lines[roleIndex - 1]} (${lines[roleIndex]})${about}`;
+  });
 }
 
 function writePath(intake: Intake, path: string, value: string) {
@@ -125,8 +224,7 @@ function clean(value: string): string {
 
 export const SAMPLE_DECK_TEXT = `Northstar Labs
 Legal name: Northstar Labs Inc.
-Founded: March 2024
-Headquarters: Austin, TX
+Country: United States
 Team size: 6
 Founders: Ada Okonkwo, former payments lead at Stripe. Ben Cho, robotics PhD.
 Problem: Mid-market warehouses lose 8 hours a week reconciling inventory.

@@ -1,6 +1,6 @@
 import { generateText, Output } from "ai";
 import { z } from "zod";
-import { chatModel, DECK_MODEL, modelConfigured } from "@/lib/ai/openrouter";
+import { chatModel, modelConfigured } from "@/lib/ai/openrouter";
 import { isSlideLabelledDeckText } from "@/lib/extract/deck-read";
 import { coerceIntake, type Intake, type Report } from "@/lib/types";
 
@@ -9,8 +9,7 @@ export { modelConfigured } from "@/lib/ai/openrouter";
 const intakeSchema = z.object({
   company: z.object({
     legalName: z.string(),
-    foundingDate: z.string(),
-    headquarters: z.string(),
+    country: z.string(),
     teamSize: z.string(),
     founderBackgrounds: z.string(),
   }),
@@ -49,10 +48,10 @@ const intakeSchema = z.object({
 const EXTRACT_SYSTEM = [
   "You extract startup facts from a pitch deck for an investor intake form.",
   "Decks are written as slides: headings, short phrases, charts and callouts. When the input uses \"Slide N:\" lines, treat each block as one slide. Read them the way an investor would; only use an attached PDF when no slide text was provided.",
-  "Only use what the deck states. Use an empty string when the deck does not say. Never guess or invent a metric.",
-  "Keep amounts as the deck writes them, with the currency symbol and unit, for example \"£690M\" or \"$3.1k MRR\".",
-  "teamSize is the number of people working at the company, as digits. Do not use survey sizes, customer counts or market numbers. If the deck only shows named team members, count them.",
-  "foundingDate is when the company was founded, not the date of the deck.",
+  "Only use what the deck states. Use an empty string when the deck does not say. Never guess, estimate, calculate or extrapolate a value: an empty field becomes a question for the founders, which is better than a wrong answer.",
+  "Keep amounts as the deck writes them, with the currency symbol and unit, for example \"£690M\" or \"£3.1k MRR\". The default currency is pounds: when the deck gives an amount with no currency, write it with £. Use another currency only when the deck clearly states the amount in it, and never convert between currencies.",
+  "teamSize is the number of people working at the company, as digits, and only when the deck states a headcount. Do not count the people shown on a team slide, and do not use survey sizes, customer counts or market numbers.",
+  "country is the country the company is based in, written in full, for example \"United Kingdom\". Fill it only when the deck says where the company is based or registered, or names a scheme only companies in that country can use, such as SEIS or EIS for the United Kingdom. Do not infer it from the currency, the language or where the customers are.",
   "amountRaised is money already raised or committed, not the size of the round being asked for.",
   "valuationOrCap is the valuation or cap of the current round.",
   "priceOrAcv is what a customer pays. mrrOrGmv is current revenue or GMV. activeUsers is current users or customers; say so if the number is a waitlist.",
@@ -103,7 +102,7 @@ async function extractWithModel(text: string, pdf: Uint8Array | null): Promise<I
     : "No text could be pulled from the deck. Read the attached file.";
   try {
     const { output } = await generateText({
-      model: chatModel(DECK_MODEL),
+      model: chatModel(),
       timeout: pdf ? 90000 : 45000,
       output: Output.object({ schema: intakeSchema }),
       system: EXTRACT_SYSTEM,
@@ -113,7 +112,7 @@ async function extractWithModel(text: string, pdf: Uint8Array | null): Promise<I
           content: pdf
             ? [
                 { type: "text", text: `The pitch deck is attached as a PDF.\n\n${textBlock}` },
-                { type: "file", mediaType: "application/pdf", data: pdf },
+                { type: "file", mediaType: "application/pdf", filename: "deck.pdf", data: pdf },
               ]
             : [{ type: "text", text: textBlock }],
         },
@@ -138,7 +137,7 @@ export async function enrichReportProse(
 
   try {
     const { output } = await generateText({
-      model: chatModel(DECK_MODEL),
+      model: chatModel(),
       timeout: 30000,
       output: Output.object({
         schema: z.object({

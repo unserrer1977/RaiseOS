@@ -1,6 +1,6 @@
-# RaiseOS
+# Raise Insight by Angel OS
 
-RaiseOS turns a pitch deck into a five-pillar intake, at most four venture follow-ups, and a fundability report. Founders sign in with email and password or Google. Assessments and decks live in your Supabase project.
+Raise Insight turns a pitch deck into a five-pillar intake, at most four venture follow-ups, and a fundability report. Founders sign in with email and password or Google. Assessments and decks live in your Supabase project.
 
 ## Setup
 
@@ -12,6 +12,7 @@ RaiseOS turns a pitch deck into a five-pillar intake, at most four venture follo
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SECRET_KEY` (server only, used to resolve a share link to the finished report)
 - `OPENROUTER_API_KEY` (optional; without it, deck prefill and the report stay on the deterministic rules). When set, PDF uploads also run per-slide text extraction and OCR on image-only pages (adapted from angelosmt’s deck reader); intake refinement then uses slide-labelled text instead of re-attaching the PDF.
+- `OPENROUTER_MODEL` (optional; OpenRouter model id. It must accept PDF file parts. Defaults to `google/gemini-3.5-flash-lite`)
 
 4. `npm run dev`. Set the public Supabase variables before `npm run build` as well; Next.js inlines `NEXT_PUBLIC_` values at build time.
 
@@ -46,4 +47,4 @@ Auth settings live on the `Gotrue Auth` service: `GOTRUE_SITE_URL` and `GOTRUE_U
 
 ## Product design
 
-- **[UI specification (designer handoff)](docs/UI_SPEC.md)** — scope, IA, screen inventory, design-system guidance, and accessibility targets for RaiseOS.
+- **[UI specification (designer handoff)](docs/UI_SPEC.md)** — scope, IA, screen inventory, design-system guidance, and accessibility targets for Raise Insight.

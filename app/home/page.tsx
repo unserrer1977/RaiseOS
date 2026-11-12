@@ -45,7 +45,7 @@ export default async function AssessmentsPage() {
   return (
     <Frame email={user.email}>
       <div className="flex flex-col gap-3">
-        <h1 className="font-serif text-4xl leading-tight sm:text-[40px]">Your assessments</h1>
+        <h1 className="text-3xl font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">Your assessments</h1>
         <p className="text-muted">Start a new one, or open a report you already finished.</p>
       </div>
       <div className="mt-8">
@@ -73,13 +73,13 @@ export default async function AssessmentsPage() {
                   className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-5 text-ink"
                 >
                   <span className="flex min-w-0 flex-col gap-0.5">
-                    <span className="font-serif text-2xl leading-tight">{title}</span>
+                    <span className="text-base font-medium leading-tight">{title}</span>
                     {meta ? <span className="text-[13px] text-muted">{meta}</span> : null}
                   </span>
                   {report && row.status === "complete" ? (
                     <VerdictPill verdict={report.verdict} label={report.verdictLabel} />
                   ) : (
-                    <span className="whitespace-nowrap rounded-full border border-muted px-3 py-1 text-[13px] text-muted">
+                    <span className="whitespace-nowrap rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-muted">
                       {STATUS_LABEL[row.status] ?? row.status}
                     </span>
                   )}

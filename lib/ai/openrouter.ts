@@ -1,10 +1,17 @@
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 
-/** Fast model for intake extraction and deck OCR (OpenRouter id). */
-export const DECK_MODEL = "google/gemini-2.5-flash";
+/** Default when `OPENROUTER_MODEL` is unset. Must accept PDF file parts for refine/OCR. */
+export const DEFAULT_MODEL = "google/gemini-3.5-flash-lite";
+
+/** @deprecated Use {@link resolvedModelId} / `chatModel()`. */
+export const DECK_MODEL = DEFAULT_MODEL;
 
 export function modelConfigured(): boolean {
   return Boolean(process.env.OPENROUTER_API_KEY?.trim());
+}
+
+export function resolvedModelId(): string {
+  return process.env.OPENROUTER_MODEL?.trim() || DEFAULT_MODEL;
 }
 
 function getProvider() {
@@ -13,6 +20,6 @@ function getProvider() {
   return createOpenRouter({ apiKey });
 }
 
-export function chatModel(modelId = DECK_MODEL) {
+export function chatModel(modelId = resolvedModelId()) {
   return getProvider().chat(modelId);
 }

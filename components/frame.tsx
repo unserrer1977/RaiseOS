@@ -14,7 +14,7 @@ export function Frame({
   return (
     <div className="mx-auto min-h-full w-full max-w-3xl px-5 py-8">
       <header className="no-print flex flex-wrap items-center justify-between gap-4">
-        <Wordmark href={flow === "angel" || !ACCOUNTS_ENABLED ? "/angel" : "/"} suffix={flow === "angel" ? "for angels" : undefined} />
+        <Wordmark href={flow === "angel" || !ACCOUNTS_ENABLED ? "/angel" : "/"} suffix={flow === "angel" ? "For angels" : undefined} />
         <nav aria-label={flow === "angel" ? "Main" : "Account"} className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[15px] text-muted">
           {flow === "angel" || !ACCOUNTS_ENABLED ? (
             <Link href="/angel" className="font-medium text-ink">

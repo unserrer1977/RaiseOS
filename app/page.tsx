@@ -8,7 +8,7 @@ import { getSessionUser } from "@/lib/auth";
 const STEPS = [
   {
     title: "Upload the deck",
-    body: "PDF or PPTX. RaiseOS reads it and fills a five-part intake: company, problem, go-to-market, traction and cap table.",
+    body: "PDF or PPTX. Raise Insight reads it and fills a five-part intake: company, problem, go-to-market, traction and cap table.",
   },
   {
     title: "Answer what a partner would ask",
@@ -24,8 +24,8 @@ const VERDICTS = [
   {
     kicker: "Venture fit",
     title: "Highly Fundable",
-    body: "No structural gaps, a market that can carry a $1B outcome, and traction on the page.",
-    tone: "text-accent",
+    body: "No structural gaps, a market that can carry a £1B outcome, and traction on the page.",
+    tone: "text-success",
     Icon: CheckCircleIcon,
   },
   {
@@ -79,9 +79,9 @@ const FAQ = [
 ];
 
 const primaryButton =
-  "inline-flex min-h-12 items-center rounded-full bg-ink px-6 text-[15px] text-paper";
+  "inline-flex min-h-12 items-center rounded-md font-medium bg-ink px-6 text-[15px] text-white";
 const secondaryButton =
-  "inline-flex min-h-12 items-center rounded-full border border-line-strong px-6 text-[15px] text-ink";
+  "inline-flex min-h-12 items-center rounded-md font-medium border border-line-strong px-6 text-[15px] text-ink";
 
 export default async function HomePage() {
   await connection();
@@ -114,12 +114,12 @@ export default async function HomePage() {
       <main>
         <section className="mx-auto flex max-w-6xl flex-wrap items-center gap-16 px-6 pb-24 pt-12 sm:pt-16">
           <div className="flex min-w-0 flex-[1_1_480px] flex-col gap-6">
-            <p className="text-[13px] uppercase tracking-[0.16em] text-muted">For early-stage founders</p>
-            <h1 className="font-serif text-5xl leading-[1.04] tracking-[-0.02em] sm:text-[64px]">
+            <p className="font-mono text-xs uppercase tracking-[0.08em] text-muted">For early-stage founders</p>
+            <h1 className="text-4xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-[56px]">
               A partner’s read on whether this is a venture-scale company.
             </h1>
             <p className="max-w-xl text-lg text-muted sm:text-[19px]">
-              Upload the deck. RaiseOS fills the intake, asks at most four follow-ups when the story does
+              Upload the deck. Raise Insight fills the intake, asks at most four follow-ups when the story does
               not hold, and leaves you with a fundability report you can share.
             </p>
             <div className="mt-2 flex flex-wrap gap-3">
@@ -137,12 +137,12 @@ export default async function HomePage() {
 
           <figure
             aria-label="Sample report preview"
-            className="flex min-w-0 flex-[1_1_380px] flex-col gap-4 rounded-[20px] border border-line bg-card p-8"
+            className="flex min-w-0 flex-[1_1_380px] flex-col gap-4 rounded-lg border border-line bg-card shadow-sm p-8"
           >
-            <p className="text-xs uppercase tracking-[0.14em] text-muted">Venture scalability report · sample</p>
+            <p className="font-mono text-xs uppercase tracking-[0.08em] text-muted">Venture scalability report · sample</p>
             <p className="text-sm text-muted">Sample company</p>
-            <p className="flex items-center gap-3 font-serif text-4xl leading-tight">
-              <span className="text-accent">
+            <p className="flex items-center gap-3 text-3xl font-semibold tracking-[-0.02em] leading-tight">
+              <span className="text-success">
                 <CheckCircleIcon size={28} />
               </span>
               Highly Fundable
@@ -153,7 +153,7 @@ export default async function HomePage() {
             </p>
             <div className="grid grid-cols-2 gap-3">
               <div className="border-t border-line pt-2.5">
-                <p className="text-[13px] font-semibold text-accent">Green flags</p>
+                <p className="text-[13px] font-semibold text-success">Green flags</p>
                 <p className="mt-1 text-sm">MoM growth of 18% is strong for this stage.</p>
               </div>
               <div className="border-t border-line pt-2.5">
@@ -166,12 +166,12 @@ export default async function HomePage() {
 
         <section id="how" className="border-t border-line">
           <div className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-24">
-            <h2 className="font-serif text-4xl tracking-[-0.01em]">How it works</h2>
+            <h2 className="text-3xl font-semibold tracking-[-0.02em]">How it works</h2>
             <ol className="grid gap-8 sm:grid-cols-3">
               {STEPS.map((step, index) => (
                 <li key={step.title} className="flex flex-col gap-2.5 border-t border-ink pt-5">
-                  <span className="font-serif text-xl text-accent">0{index + 1}</span>
-                  <h3 className="font-serif text-[26px] leading-tight">{step.title}</h3>
+                  <span className="font-mono text-sm text-muted">0{index + 1}</span>
+                  <h3 className="text-xl font-semibold leading-tight">{step.title}</h3>
                   <p className="text-muted">{step.body}</p>
                 </li>
               ))}
@@ -182,19 +182,19 @@ export default async function HomePage() {
         <section id="report" className="border-y border-line bg-card">
           <div className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-24">
             <div className="flex max-w-2xl flex-col gap-3">
-              <h2 className="font-serif text-4xl tracking-[-0.01em]">One of three plain answers</h2>
+              <h2 className="text-3xl font-semibold tracking-[-0.02em]">One of three plain answers</h2>
               <p className="text-lg text-muted">
                 No “interesting, keep us posted”. Every report lands on a verdict and names the gaps behind it.
               </p>
             </div>
             <div className="grid gap-5 md:grid-cols-3">
               {VERDICTS.map(({ kicker, title, body, tone, Icon }) => (
-                <div key={title} className="flex flex-col gap-3 rounded-2xl border border-line bg-paper p-7">
+                <div key={title} className="flex flex-col gap-3 rounded-lg border border-line bg-paper p-7">
                   <p className={`flex items-center gap-2.5 text-[13px] font-semibold uppercase tracking-[0.06em] ${tone}`}>
                     <Icon size={22} />
                     {kicker}
                   </p>
-                  <h3 className="font-serif text-[28px] leading-tight">{title}</h3>
+                  <h3 className="text-xl font-semibold leading-tight">{title}</h3>
                   <p className="text-muted">{body}</p>
                 </div>
               ))}
@@ -205,7 +205,7 @@ export default async function HomePage() {
         <section className="mx-auto grid max-w-6xl gap-x-16 gap-y-12 px-6 py-24 sm:grid-cols-2">
           {BENEFITS.map((item) => (
             <div key={item.title} className="flex flex-col gap-2">
-              <h3 className="font-serif text-2xl">{item.title}</h3>
+              <h3 className="text-lg font-semibold">{item.title}</h3>
               <p className="text-muted">{item.body}</p>
             </div>
           ))}
@@ -213,7 +213,7 @@ export default async function HomePage() {
 
         <section id="faq" className="border-t border-line">
           <div className="mx-auto flex max-w-3xl flex-col gap-2 px-6 py-24">
-            <h2 className="mb-6 font-serif text-4xl">Questions</h2>
+            <h2 className="mb-6 text-3xl font-semibold tracking-[-0.02em]">Questions</h2>
             {FAQ.map((item) => (
               <details key={item.q} className="border-b border-line py-5">
                 <summary className="cursor-pointer text-lg">{item.q}</summary>
@@ -223,14 +223,14 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="bg-ink text-paper">
+        <section className="bg-ink text-white">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 px-6 py-16">
-            <h2 className="max-w-2xl font-serif text-4xl leading-tight">
+            <h2 className="max-w-2xl text-3xl font-semibold tracking-[-0.02em] leading-tight">
               Find out what a partner would say before you pitch one.
             </h2>
             <Link
               href="/register"
-              className="inline-flex min-h-12 items-center rounded-full bg-paper px-6 text-[15px] text-ink"
+              className="inline-flex min-h-12 items-center rounded-md bg-accent px-6 text-[15px] font-medium text-ink"
             >
               Register
             </Link>
@@ -239,7 +239,7 @@ export default async function HomePage() {
       </main>
 
       <footer className="mx-auto flex max-w-6xl flex-wrap justify-between gap-4 px-6 py-8 text-sm text-muted">
-        <span>© {new Date().getFullYear()} RaiseOS</span>
+        <span>© {new Date().getFullYear()} Raise Insight by Angel OS</span>
       </footer>
     </div>
   );

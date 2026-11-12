@@ -50,8 +50,8 @@ export function AngelUploader() {
         setMode(value);
         setError("");
       }}
-      className={`min-h-11 rounded-full px-4 text-sm ${
-        mode === value ? "bg-ink text-paper" : "text-muted hover:text-ink"
+      className={`min-h-10 rounded-md px-4 text-sm font-medium ${
+        mode === value ? "bg-card text-ink shadow-sm" : "text-muted hover:text-ink"
       }`}
     >
       {label}
@@ -60,15 +60,15 @@ export function AngelUploader() {
 
   return (
     <div>
-      <div role="tablist" aria-label="How to share the deck" className="mb-4 inline-flex gap-1 rounded-full border border-line p-1">
+      <div role="tablist" aria-label="How to share the deck" className="mb-4 inline-flex gap-1 rounded-lg bg-secondary p-1">
         {tab("file", "Upload a file")}
         {tab("link", "Paste a link")}
       </div>
 
       {mode === "file" ? (
         <label
-          className={`flex min-h-56 cursor-pointer flex-col items-center justify-center gap-3 rounded-[20px] border-[1.5px] border-dashed px-6 py-10 text-center transition-colors focus-within:outline-2 focus-within:outline-offset-4 focus-within:outline-accent ${
-            dragging ? "border-accent bg-accent-tint" : "border-line-strong bg-card"
+          className={`flex min-h-56 cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-[1.5px] border-dashed px-6 py-10 text-center transition-colors focus-within:outline-2 focus-within:outline-offset-4 focus-within:outline-accent ${
+            dragging ? "border-accent bg-accent-soft" : "border-line-strong bg-card"
           }`}
           onDragOver={(event) => {
             event.preventDefault();
@@ -82,10 +82,10 @@ export function AngelUploader() {
             if (file && !pending) sendFile(file);
           }}
         >
-          <span className="text-accent">
+          <span className="text-ink">
             <UploadFileIcon size={36} />
           </span>
-          <span className="font-serif text-3xl leading-tight text-ink">
+          <span className="text-xl font-semibold leading-tight text-ink">
             {dragging ? "Release to upload" : "Drop the founder’s deck"}
           </span>
           <span className="max-w-sm text-sm text-muted">
@@ -101,18 +101,18 @@ export function AngelUploader() {
               if (file) sendFile(file);
             }}
           />
-          <span className="mt-3 inline-flex min-h-11 items-center rounded-full bg-ink px-5 text-sm text-paper">
+          <span className="mt-3 inline-flex min-h-11 items-center rounded-md font-medium bg-ink px-5 text-sm text-white">
             {pending ? "Reading the deck…" : "Choose a file"}
           </span>
         </label>
       ) : (
         <form
           onSubmit={sendLink}
-          className="flex min-h-56 flex-col justify-center gap-4 rounded-[20px] border-[1.5px] border-dashed border-line-strong bg-card px-6 py-10"
+          className="flex min-h-56 flex-col justify-center gap-4 rounded-lg border-[1.5px] border-dashed border-line-strong bg-card px-6 py-10"
         >
           <label className="flex flex-col gap-2">
-            <span className="flex items-center gap-2 font-serif text-3xl leading-tight text-ink">
-              <span className="text-accent">
+            <span className="flex items-center gap-2 text-xl font-semibold leading-tight text-ink">
+              <span className="text-ink">
                 <LinkIcon size={28} />
               </span>
               Paste the deck link
@@ -128,10 +128,10 @@ export function AngelUploader() {
               disabled={pending}
               onChange={(event) => setLink(event.target.value)}
               placeholder="https://"
-              className="mt-2 w-full border-0 border-b border-line-strong bg-transparent py-3 text-lg text-ink outline-none focus:border-accent"
+              className="mt-2 h-11 w-full rounded-md border border-line-strong bg-card px-3 text-base text-ink shadow-sm outline-none focus:border-ink focus:ring-2 focus:ring-accent/50"
             />
           </label>
-          <p role="status" className="flex items-start gap-2.5 rounded-xl border border-warn/25 bg-warn-tint/60 px-3.5 py-3 text-sm text-warn">
+          <p role="status" className="flex items-start gap-2.5 rounded-md border border-warn/25 bg-warn-tint/60 px-3.5 py-3 text-sm text-warn">
             <span className="mt-0.5 shrink-0">
               <AlertCircleIcon />
             </span>
@@ -145,7 +145,7 @@ export function AngelUploader() {
             <button
               type="submit"
               disabled={pending || !link.trim()}
-              className="inline-flex min-h-11 items-center rounded-full bg-ink px-5 text-sm text-paper disabled:opacity-60"
+              className="inline-flex min-h-11 items-center rounded-md font-medium bg-ink px-5 text-sm text-white disabled:opacity-60"
             >
               {pending ? "Fetching the deck…" : "Assess this deck"}
             </button>
